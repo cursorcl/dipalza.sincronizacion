@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
+<jardesc>
+    <jar path="C:/workspace/Sincronizacion/sincronizacion.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/Sincronizacion/sincronizacion.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" mainClassHandleIdentifier="=Sincronizacion/src&lt;com.grupo.forms{SincronizacionMMI.java[SincronizacionMMI" manifestLocation="/Sincronizacion/sincronizacion" manifestVersion="1.0" reuseManifest="false" saveManifest="true" usesManifest="true">
+        <sealing sealJar="true">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <javaElement handleIdentifier="=Sincronizacion/src"/>
+        <javaElement handleIdentifier="=BibliotecaTransferencia/src"/>
+        <javaElement handleIdentifier="=BibliotecaTransferenciaPC/src"/>
+    </selectedElements>
+</jardesc>

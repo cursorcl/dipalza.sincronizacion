@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Mon May 21 23:09:51 CLT 2012
+onejar.license.required=false
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=true
+jarname=Sincronizacion_fat.jar
+manifest.mergeall=true
+manifest.mainclass=com.grupo.forms.SincronizacionMMI
+manifest.file=<createnew>
+jarname.isextern=false
+onejar.expand=
+excludes=<po|Sincronizacion>~CVS/
+includes=<inc|Ventas/res>~mwt-midp2.jar;<inc|Ventas/res>~mwt.jar

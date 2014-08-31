@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Class-Path: . ventasServer_lib/jasperreports-3.0.0.jar ventasServer_li
+ b/log4j.jar ventasServer_lib/jcalendar.jar
+Main-Class: com.grupo.forms.SincronizacionMMI
+
