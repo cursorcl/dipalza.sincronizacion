@@ -596,7 +596,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
         notify("Proceso de generación de nueva Factura = " + nFactura + " finalizado");
       }
     } catch (SQLException e) {
-      notify("Ha Fallado la generaci�nn de la factura = " + nFactura);
+      notify("Ha Fallado la generación de la factura = " + nFactura);
       e.printStackTrace();
       nFactura = "";
     }
@@ -621,7 +621,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
   }
 
   /*
-   * Administraci�n de productos numerados
+   * Administración de productos numerados
    */
   public void removeNumerado(ProductosNumerados numerado) {
     String strDelete = "delete from numerados where articulo = ? and numero = ?";

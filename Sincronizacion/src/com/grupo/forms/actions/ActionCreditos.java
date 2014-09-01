@@ -6,11 +6,11 @@ import com.grupo.forms.SincronizacionMMI;
 
 public class ActionCreditos extends ActionDipalza {
 	public ActionCreditos() {
-		super(null, "Créditos");
+		super(null, "CrÃ©ditos");
 	}
 
 	public ActionCreditos(SincronizacionMMI mmi) {
-		super(mmi, "Créditos");
+		super(mmi, "CrÃ©ditos");
 	}
 
 	@Override

@@ -29,7 +29,7 @@ import com.grupo.utilitarios.FechaFormateada;
 
 /**
  * Clase del servidor donde se reciben los mensajes 
- * de solicitud de clientes y productos, actualizaci�n de clientes
+ * de solicitud de clientes y productos, actualización de clientes
  * y de almacenamiento de ventas.
  * @author cursor
  *
@@ -153,7 +153,7 @@ public class ProcessorServer extends EventEmisor implements Notificable {
 				try {
 					sendProductos(m.getIdPalm());
 				} catch (Exception e) {
-					log.error("Error en el env�o de los datos de productos.");
+					log.error("Error en el envío de los datos de productos.");
 				}
 				break;
 				

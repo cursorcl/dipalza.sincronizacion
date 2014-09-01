@@ -290,7 +290,7 @@ public class Numerados extends JPanel implements ActionListener, FocusListener {
 
 		JOptionPane.showMessageDialog(this, "Cantidad de piezas del "
 			+ txtArticulo.getText() + " es mayor a 99.",
-			"Número de piezas", JOptionPane.ERROR_MESSAGE);
+			"NÃºmero de piezas", JOptionPane.ERROR_MESSAGE);
 		lblNombre.setText("");
 		txtArticulo.setText("");
 		txtArticulo.requestFocus();
@@ -343,7 +343,7 @@ public class Numerados extends JPanel implements ActionListener, FocusListener {
 	    int rowCount = tblNumerados.getSelectedRowCount();
 	    int[] rows = tblNumerados.getSelectedRows();
 	    int resultado = JOptionPane.showConfirmDialog(this,
-		    "Confirma la eliminación de productos seleccionados.");
+		    "Confirma la eliminaciÃ³n de productos seleccionados.");
 	    if (resultado == JOptionPane.OK_OPTION) {
 		for (int n = 0; n < rowCount; n++) {
 		    ProductosNumerados item = modeloNumerado.getItem(rows[n]);
@@ -352,7 +352,7 @@ public class Numerados extends JPanel implements ActionListener, FocusListener {
 	    }
 	} else if (ERASE_ALL.equals(actionEvent.getActionCommand())) {
 	    int resultado = JOptionPane.showConfirmDialog(this,
-		    "Confirma eliminación de todos los productos.");
+		    "Confirma eliminaciÃ³n de todos los productos.");
 	    if (resultado == JOptionPane.OK_OPTION) {
 		controlador.eliminarTodos();
 	    }

@@ -56,18 +56,18 @@ public class HojaRuta extends EventEmisor {
 			pstmt.setDate(1, new java.sql.Date(fecha.getTime()));
 			pstmt.executeUpdate();
 			pstmt.close();
-			notify("Actualizando informaci髇 de rutas");
+			notify("Actualizando informaci贸n de rutas");
 			pstmt = con
 					.prepareStatement("update ReporteRutaDiaria set nombreruta = M.descripcion, narticulo=cast(articulo as int) from MSOSTTABLAS As M where M.tabla = '017' and M.codigo = ruta");
 
 			pstmt.executeUpdate();
 			pstmt.close();
-			notify("Actualizando informaci髇 de art韈ulos");
+			notify("Actualizando informaci贸n de art铆culos");
 			pstmt = con
 					.prepareStatement("update ReporteRutaDiaria  set descripcion = A.descripcion  from ARTICULO as A where A.articulo = ReporteRutaDiaria.articulo");
 			pstmt.executeUpdate();
 			pstmt.close();
-			notify("Generando numeraci髇 de quesos");
+			notify("Generando numeraci贸n de quesos");
 			pstmt = con
 					.prepareStatement("SELECT distinct m.Ruta, q.Articulo, d.Descripcion, a.descripcion as original FROM Numerados AS q, detalledocumento AS d, msoclientes AS m, encabezadocumento AS e, articulo as a WHERE q.Articulo=d.articulo AND m.Rut=e.rut AND e.Id=d.id and a.articulo = q.articulo and e.fecha = ? ORDER BY m.Ruta, q.Articulo");
 			pstmt.clearParameters();
@@ -78,7 +78,7 @@ public class HojaRuta extends EventEmisor {
 			String artclo = "";
 			String descrp = "";
 			String descOld = "";
-			notify("Actualizando numeraci髇 de quesos");
+			notify("Actualizando numeraci贸n de quesos");
 			while (r.next()) {
 				String codeRuta = r.getString(1);
 				String articulo = r.getString(2);
@@ -110,9 +110,9 @@ public class HojaRuta extends EventEmisor {
 			r.close();
 			pstmt.close();
 			result = true;
-			notify("Generaci髇 de datos de reporte concluida");
+			notify("Generaci贸n de datos de reporte concluida");
 		} catch (SQLException e) {
-			notify("Generaci髇 de datos de reporte ha fallado");
+			notify("Generaci贸n de datos de reporte ha fallado");
 			e.printStackTrace();
 		}
 		return result;
@@ -172,7 +172,7 @@ public class HojaRuta extends EventEmisor {
 			Map<String, Object> masterParams = new HashMap<String, Object>();
 			Timestamp t = new Timestamp(fecha.getTime());
 			masterParams.put("FECHA_REPORTE", t);
-			notify("Establecido par醡etro fecha del reporte");
+			notify("Establecido par谩metro fecha del reporte");
 
 			JasperPrint masterPrint = null;
 			try {
