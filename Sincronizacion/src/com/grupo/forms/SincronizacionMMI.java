@@ -57,580 +57,575 @@ import com.grupo.util.EventMsgListener;
 import com.grupo.utilitarios.FechaFormateada;
 
 public class SincronizacionMMI extends JFrame implements EventMsgListener {
-	private static final long serialVersionUID = 1L;
-	static Logger logger = Logger.getLogger(SincronizacionMMI.class);
+  private static final long serialVersionUID = 1L;
+  static Logger logger = Logger.getLogger(SincronizacionMMI.class);
 
-	private JPanel jPanel = null;
-	private JPanel jPanel2 = null;
-	private JLabel jLabel = null;
-	private JButton jButton2 = null;
-	private JPanel jPanel3 = null;
-	private JButton btnNumerados = null;
-	private ProcessorServer data = null;
-	private JList lstMessages = null;
+  private JPanel jPanel = null;
+  private JPanel jPanel2 = null;
+  private JLabel jLabel = null;
+  private JButton jButton2 = null;
+  private JPanel jPanel3 = null;
+  private JButton btnNumerados = null;
+  private ProcessorServer data = null;
+  private JList lstMessages = null;
 
-	private DefaultListModel model = new DefaultListModel();
-	private JButton btnReport = null;
-	private JButton btnClone = null;
-	private JCalendarCombo calendar = null;
-	private DlgClonarFactura dlg = null;
-	private JButton btnClear = null;
-	private JScrollPane jScrollPane = null;
-	private JCalendarCombo cmbFechaFacturacion = null;
-	private JLabel lblFecha = null;
-	private JButton btnRepCreditos = null;
-	private JMenuBar mnuSistema = null;
-	private JMenu mnuPPal = null;
-	private JMenuItem mnuReporte = null;
-	private JMenuItem mnuCreditos = null;
-	private JMenuItem mnuNumerados = null;
-	private JMenuItem mnuClonar = null;
-	private JMenuItem mnuSalir = null;
-	private JSeparator jSeparator = null;
-	private JPanel jPanel4 = null;
-	
-	public static Date fechaFacturacion = new Date(System.currentTimeMillis());
-	public static Date fechaReporte = new Date(System.currentTimeMillis());
+  private DefaultListModel model = new DefaultListModel();
+  private JButton btnReport = null;
+  private JButton btnClone = null;
+  private JCalendarCombo calendar = null;
+  private DlgClonarFactura dlg = null;
+  private JButton btnClear = null;
+  private JScrollPane jScrollPane = null;
+  private JCalendarCombo cmbFechaFacturacion = null;
+  private JLabel lblFecha = null;
+  private JButton btnRepCreditos = null;
+  private JMenuBar mnuSistema = null;
+  private JMenu mnuPPal = null;
+  private JMenuItem mnuReporte = null;
+  private JMenuItem mnuCreditos = null;
+  private JMenuItem mnuNumerados = null;
+  private JMenuItem mnuClonar = null;
+  private JMenuItem mnuSalir = null;
+  private JSeparator jSeparator = null;
+  private JPanel jPanel4 = null;
 
-	public SincronizacionMMI() {
-		initialize();
-		Properties logProperties = new Properties();
-		try {
-			logProperties.load(super.getClass().getResourceAsStream(
-					"/log.properties"));
-			PropertyConfigurator.configure(logProperties);
-		} catch (IOException e) {
-			BasicConfigurator.configure();
-		}
+  public static Date fechaFacturacion = new Date(System.currentTimeMillis());
+  public static Date fechaReporte = new Date(System.currentTimeMillis());
 
-		addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				System.exit(0);
-			}
-		});
-		this.data = new ProcessorServer(new FechaFormateada(
-				this.cmbFechaFacturacion.getDate()));
-		this.data.addEventMsgListener(this);
-		HojaRuta.getInstance().addEventMsgListener(this);
-	}
+  public SincronizacionMMI() {
+    initialize();
+    Properties logProperties = new Properties();
+    try {
+      logProperties.load(super.getClass().getResourceAsStream("/log.properties"));
+      PropertyConfigurator.configure(logProperties);
+    } catch (IOException e) {
+      BasicConfigurator.configure();
+    }
 
-	private void initialize() {
-	    String ipAddress =  "localhost:5500";
-	    try {
-		InetAddress thisIp = InetAddress.getLocalHost();
-		ipAddress = InetAddress.getLocalHost() + ":5500";
-	    } catch (UnknownHostException e) {
-		e.printStackTrace();
-	    }
-	    
-		setSize(new Dimension(556, 375));
-		this.setJMenuBar(getMnuSistema());
-		setTitle("Ventas " + ipAddress);
-		setContentPane(getJPanel());
-		graphicInit();
-		setResizable(false);
-	}
+    addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent e) {
+        System.exit(0);
+      }
+    });
+    this.data = new ProcessorServer(new FechaFormateada(this.cmbFechaFacturacion.getDate()));
+    this.data.addEventMsgListener(this);
+    HojaRuta.getInstance().addEventMsgListener(this);
+  }
 
-	private JPanel getJPanel() {
-		if (this.jPanel == null) {
-			this.jPanel = new JPanel();
-			this.jPanel.setLayout(new BorderLayout());
-			this.jPanel.add(getJPanel2(), "Center");
-			this.jPanel.add(getJPanel3(), "South");
-		}
-		return this.jPanel;
-	}
+  private void initialize() {
+    String ipAddress = "localhost:5500";
+    try {
+      InetAddress thisIp = InetAddress.getLocalHost();
+      ipAddress = InetAddress.getLocalHost() + ":5500";
+    } catch (UnknownHostException e) {
+      e.printStackTrace();
+    }
 
-	private JPanel getJPanel2() {
-		if (this.jPanel2 == null) {
-			GridBagConstraints gridBagConstraints62 = new GridBagConstraints();
-			gridBagConstraints62.gridx = 5;
-			gridBagConstraints62.gridy = 5;
-			GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
-			gridBagConstraints51.anchor = 13;
-			gridBagConstraints51.insets = new Insets(2, 3, 0, 3);
-			gridBagConstraints51.gridx = 5;
-			gridBagConstraints51.gridy = 3;
-			gridBagConstraints51.fill = GridBagConstraints.HORIZONTAL;
-			GridBagConstraints gridBagConstraints41 = new GridBagConstraints();
-			gridBagConstraints41.anchor = GridBagConstraints.CENTER;
-			gridBagConstraints41.insets = new Insets(3, 3, 0, 2);
-			gridBagConstraints41.gridheight = 3;
-			gridBagConstraints41.gridwidth = 1;
-			gridBagConstraints41.gridx = 7;
-			gridBagConstraints41.gridy = 3;
-			gridBagConstraints41.weightx = 1.0D;
-			gridBagConstraints41.fill = GridBagConstraints.NONE;
-			GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
-			gridBagConstraints31.gridx = 4;
-			gridBagConstraints31.gridheight = 2;
-			gridBagConstraints31.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints31.gridy = 4;
-			GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
-			gridBagConstraints14.anchor = GridBagConstraints.EAST;
-			gridBagConstraints14.insets = new Insets(2, 3, 0, 3);
-			gridBagConstraints14.gridwidth = 1;
-			gridBagConstraints14.gridx = 9;
-			gridBagConstraints14.gridy = 6;
-			gridBagConstraints14.ipadx = 0;
-			gridBagConstraints14.fill = GridBagConstraints.NONE;
-			GridBagConstraints gridBagConstraints131 = new GridBagConstraints();
-			gridBagConstraints131.fill = GridBagConstraints.NONE;
-			gridBagConstraints131.gridx = 9;
-			gridBagConstraints131.gridy = 5;
-			gridBagConstraints131.anchor = GridBagConstraints.EAST;
-			gridBagConstraints131.insets = new Insets(2, 3, 0, 3);
-			GridBagConstraints gridBagConstraints121 = new GridBagConstraints();
-			gridBagConstraints121.anchor = GridBagConstraints.EAST;
-			gridBagConstraints121.insets = new Insets(2, 3, 0, 3);
-			gridBagConstraints121.gridx = 9;
-			gridBagConstraints121.gridy = 3;
-			gridBagConstraints121.fill = GridBagConstraints.NONE;
-			GridBagConstraints gridBagConstraints71 = new GridBagConstraints();
-			gridBagConstraints71.gridx = 8;
-			gridBagConstraints71.fill = GridBagConstraints.NONE;
-			gridBagConstraints71.insets = new Insets(3, 3, 0, 0);
-			gridBagConstraints71.gridy = 0;
-			GridBagConstraints gridBagConstraints61 = new GridBagConstraints();
-			gridBagConstraints61.gridx = 0;
-			gridBagConstraints61.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints61.gridwidth = 6;
-			gridBagConstraints61.gridy = 0;
-			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
-			gridBagConstraints13.gridx = 4;
-			gridBagConstraints13.gridwidth = 1;
-			gridBagConstraints13.anchor = 17;
-			gridBagConstraints13.fill = 2;
-			gridBagConstraints13.insets = new Insets(5, 0, 0, 0);
-			gridBagConstraints13.gridy = 0;
-			this.lblFecha = new JLabel();
-			this.lblFecha.setText("Fecha Facturación");
-			GridBagConstraints gridBagConstraints = new GridBagConstraints();
-			gridBagConstraints.fill = GridBagConstraints.VERTICAL;
-			gridBagConstraints.gridy = 0;
-			gridBagConstraints.weightx = 1.0D;
-			gridBagConstraints.gridwidth = 1;
-			gridBagConstraints.anchor = GridBagConstraints.CENTER;
-			gridBagConstraints.insets = new Insets(3, 10, 3, 0);
-			gridBagConstraints.gridx = 9;
-			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
-			gridBagConstraints6.gridx = 6;
-			gridBagConstraints6.ipadx = 4;
-			gridBagConstraints6.ipady = 0;
-			gridBagConstraints6.anchor = 17;
-			gridBagConstraints6.insets = new Insets(5, 0, 0, 10);
-			gridBagConstraints6.fill = 1;
-			gridBagConstraints6.gridy = 1;
-			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-			gridBagConstraints5.gridx = 2;
-			gridBagConstraints5.ipady = 0;
-			gridBagConstraints5.gridwidth = 4;
-			gridBagConstraints5.anchor = 17;
-			gridBagConstraints5.fill = 1;
-			gridBagConstraints5.insets = new Insets(5, 0, 0, 0);
-			gridBagConstraints5.gridy = 1;
-			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-			gridBagConstraints4.gridwidth = 1;
-			gridBagConstraints4.gridy = 1;
-			gridBagConstraints4.ipadx = 0;
-			gridBagConstraints4.anchor = 17;
-			gridBagConstraints4.insets = new Insets(5, 9, 0, 0);
-			gridBagConstraints4.fill = 1;
-			gridBagConstraints4.gridx = 1;
-			this.jPanel2 = new JPanel();
-			this.jPanel2.setLayout(new GridBagLayout());
-			this.jPanel2.setBorder(BorderFactory
-					.createLineBorder(Color.gray, 1));
-			this.jPanel2.setMinimumSize(new Dimension(577, 220));
-			this.jPanel2.setMaximumSize(new Dimension(577, 220));
-			this.jPanel2.setPreferredSize(new Dimension(577, 120));
-			jPanel2.add(getCmbFechaFacturacion(), gridBagConstraints);
-			jPanel2.add(lblFecha, gridBagConstraints71);
-			jPanel2.add(getBtnNumerados(), gridBagConstraints121);
-			jPanel2.add(getBtnClone(), gridBagConstraints131);
-			jPanel2.add(getJButton2(), gridBagConstraints14);
-			jPanel2.add(getJPanel4(), gridBagConstraints31);
-			jPanel2.add(getCalendar(), gridBagConstraints41);
-			jPanel2.add(getBtnReport(), gridBagConstraints51);
-			jPanel2.add(getBtnRepCreditos(), gridBagConstraints62);
-		}
-		return this.jPanel2;
-	}
+    setSize(new Dimension(556, 410));
+    this.setJMenuBar(getMnuSistema());
+    setTitle("Ventas " + ipAddress);
+    setContentPane(getJPanel());
+    graphicInit();
+    setResizable(false);
+  }
 
-	private JButton getJButton2() {
-		if (this.jButton2 == null) {
-			this.jButton2 = new JButton();
-			jButton2.setAction(new ActionSalir(this));
-			this.jButton2.setText("Salir");
-			this.jButton2.setPreferredSize(new Dimension(100, 26));
-			this.jButton2.setMinimumSize(new Dimension(100, 26));
-			this.jButton2.setFont(new Font("Dialog", 1, 10));
-			this.jButton2.setMaximumSize(new Dimension(100, 26));
-		}
-		return this.jButton2;
-	}
+  private JPanel getJPanel() {
+    if (this.jPanel == null) {
+      this.jPanel = new JPanel();
+      this.jPanel.setLayout(new BorderLayout());
+      this.jPanel.add(getJPanel2(), "Center");
+      this.jPanel.add(getJPanel3(), "South");
+    }
+    return this.jPanel;
+  }
 
-	private JPanel getJPanel3() {
-		if (this.jPanel3 == null) {
-			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-			gridBagConstraints21.fill = 1;
-			gridBagConstraints21.weighty = 1.0D;
-			gridBagConstraints21.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints21.gridwidth = 1;
-			gridBagConstraints21.weightx = 1.0D;
-			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
-			gridBagConstraints12.gridx = 1;
-			gridBagConstraints12.fill = 3;
-			gridBagConstraints12.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints12.gridy = 0;
-			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-			gridBagConstraints11.gridx = 0;
-			gridBagConstraints11.gridheight = 3;
-			gridBagConstraints11.gridy = 0;
-			this.jPanel3 = new JPanel();
-			this.jPanel3.setLayout(new GridBagLayout());
-			this.jPanel3.setPreferredSize(new Dimension(510, 210));
-			this.jPanel3.setMinimumSize(new Dimension(510, 60));
-			this.jPanel3.setMaximumSize(new Dimension(510, 60));
-			this.jPanel3.setBorder(BorderFactory
-					.createLineBorder(Color.gray, 1));
-			jPanel3.add(getJScrollPane(), gridBagConstraints21);
-			this.jPanel3.add(getBtnClear(), gridBagConstraints12);
-		}
-		return this.jPanel3;
-	}
+  private JPanel getJPanel2() {
+    if (this.jPanel2 == null) {
+      GridBagConstraints gridBagConstraints62 = new GridBagConstraints();
+      gridBagConstraints62.insets = new Insets(0, 0, 0, 5);
+      gridBagConstraints62.gridx = 2;
+      gridBagConstraints62.gridy = 3;
+      GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
+      gridBagConstraints51.anchor = 13;
+      gridBagConstraints51.insets = new Insets(2, 3, 5, 5);
+      gridBagConstraints51.gridx = 2;
+      gridBagConstraints51.gridy = 1;
+      gridBagConstraints51.fill = GridBagConstraints.HORIZONTAL;
+      GridBagConstraints gridBagConstraints41 = new GridBagConstraints();
+      gridBagConstraints41.anchor = GridBagConstraints.CENTER;
+      gridBagConstraints41.insets = new Insets(3, 3, 0, 5);
+      gridBagConstraints41.gridheight = 3;
+      gridBagConstraints41.gridwidth = 1;
+      gridBagConstraints41.gridx = 4;
+      gridBagConstraints41.gridy = 1;
+      gridBagConstraints41.weightx = 1.0D;
+      gridBagConstraints41.fill = GridBagConstraints.NONE;
+      GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
+      gridBagConstraints31.insets = new Insets(0, 0, 0, 5);
+      gridBagConstraints31.gridx = 1;
+      gridBagConstraints31.gridheight = 2;
+      gridBagConstraints31.fill = GridBagConstraints.HORIZONTAL;
+      gridBagConstraints31.gridy = 2;
+      GridBagConstraints gridBagConstraints121 = new GridBagConstraints();
+      gridBagConstraints121.anchor = GridBagConstraints.EAST;
+      gridBagConstraints121.insets = new Insets(2, 3, 5, 3);
+      gridBagConstraints121.gridx = 6;
+      gridBagConstraints121.gridy = 1;
+      gridBagConstraints121.fill = GridBagConstraints.NONE;
+      GridBagConstraints gridBagConstraints71 = new GridBagConstraints();
+      gridBagConstraints71.gridx = 5;
+      gridBagConstraints71.fill = GridBagConstraints.NONE;
+      gridBagConstraints71.insets = new Insets(3, 3, 5, 5);
+      gridBagConstraints71.gridy = 0;
+      GridBagConstraints gridBagConstraints61 = new GridBagConstraints();
+      gridBagConstraints61.gridx = 0;
+      gridBagConstraints61.fill = GridBagConstraints.HORIZONTAL;
+      gridBagConstraints61.gridwidth = 6;
+      gridBagConstraints61.gridy = 0;
+      GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
+      gridBagConstraints13.gridx = 4;
+      gridBagConstraints13.gridwidth = 1;
+      gridBagConstraints13.anchor = 17;
+      gridBagConstraints13.fill = 2;
+      gridBagConstraints13.insets = new Insets(5, 0, 0, 0);
+      gridBagConstraints13.gridy = 0;
+      this.lblFecha = new JLabel();
+      this.lblFecha.setText("Fecha FacturaciÃ³n");
+      GridBagConstraints gridBagConstraints = new GridBagConstraints();
+      gridBagConstraints.fill = GridBagConstraints.VERTICAL;
+      gridBagConstraints.gridy = 0;
+      gridBagConstraints.weightx = 1.0D;
+      gridBagConstraints.gridwidth = 1;
+      gridBagConstraints.anchor = GridBagConstraints.CENTER;
+      gridBagConstraints.insets = new Insets(3, 10, 5, 0);
+      gridBagConstraints.gridx = 6;
+      GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
+      gridBagConstraints6.gridx = 6;
+      gridBagConstraints6.ipadx = 4;
+      gridBagConstraints6.ipady = 0;
+      gridBagConstraints6.anchor = 17;
+      gridBagConstraints6.insets = new Insets(5, 0, 0, 10);
+      gridBagConstraints6.fill = 1;
+      gridBagConstraints6.gridy = 1;
+      GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+      gridBagConstraints5.gridx = 2;
+      gridBagConstraints5.ipady = 0;
+      gridBagConstraints5.gridwidth = 4;
+      gridBagConstraints5.anchor = 17;
+      gridBagConstraints5.fill = 1;
+      gridBagConstraints5.insets = new Insets(5, 0, 0, 0);
+      gridBagConstraints5.gridy = 1;
+      GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+      gridBagConstraints4.gridwidth = 1;
+      gridBagConstraints4.gridy = 1;
+      gridBagConstraints4.ipadx = 0;
+      gridBagConstraints4.anchor = 17;
+      gridBagConstraints4.insets = new Insets(5, 9, 0, 0);
+      gridBagConstraints4.fill = 1;
+      gridBagConstraints4.gridx = 1;
+      this.jPanel2 = new JPanel();
+      this.jPanel2.setLayout(new GridBagLayout());
+      this.jPanel2.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+      this.jPanel2.setMinimumSize(new Dimension(577, 220));
+      this.jPanel2.setMaximumSize(new Dimension(577, 220));
+      this.jPanel2.setPreferredSize(new Dimension(577, 120));
+      jPanel2.add(getCmbFechaFacturacion(), gridBagConstraints);
+      jPanel2.add(lblFecha, gridBagConstraints71);
+      jPanel2.add(getBtnNumerados(), gridBagConstraints121);
+      GridBagConstraints gridBagConstraints131 = new GridBagConstraints();
+      gridBagConstraints131.fill = GridBagConstraints.NONE;
+      gridBagConstraints131.gridx = 6;
+      gridBagConstraints131.gridy = 2;
+      gridBagConstraints131.anchor = GridBagConstraints.EAST;
+      gridBagConstraints131.insets = new Insets(2, 3, 5, 3);
+      jPanel2.add(getBtnClone(), gridBagConstraints131);
+      jPanel2.add(getJPanel4(), gridBagConstraints31);
+      jPanel2.add(getCalendar(), gridBagConstraints41);
+      jPanel2.add(getBtnReport(), gridBagConstraints51);
+      jPanel2.add(getBtnRepCreditos(), gridBagConstraints62);
+      GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
+      gridBagConstraints14.anchor = GridBagConstraints.EAST;
+      gridBagConstraints14.insets = new Insets(2, 3, 0, 3);
+      gridBagConstraints14.gridwidth = 1;
+      gridBagConstraints14.gridx = 6;
+      gridBagConstraints14.gridy = 3;
+      gridBagConstraints14.ipadx = 0;
+      gridBagConstraints14.fill = GridBagConstraints.NONE;
+      jPanel2.add(getJButton2(), gridBagConstraints14);
+    }
+    return this.jPanel2;
+  }
 
-	private JButton getBtnNumerados() {
-		if (this.btnNumerados == null) {
-			this.btnNumerados = new JButton();
-			btnNumerados.setAction(new ActionNumerados(this));
-			this.btnNumerados.setText("Numerados");
-			this.btnNumerados.setPreferredSize(new Dimension(100, 26));
-			this.btnNumerados.setMinimumSize(new Dimension(100, 26));
-			this.btnNumerados.setFont(new Font("Dialog", 1, 10));
-			this.btnNumerados.setMaximumSize(new Dimension(100, 26));
-		}
-		return this.btnNumerados;
-	}
+  private JButton getJButton2() {
+    if (this.jButton2 == null) {
+      this.jButton2 = new JButton();
+      jButton2.setAction(new ActionSalir(this));
+      this.jButton2.setText("Salir");
+      this.jButton2.setPreferredSize(new Dimension(100, 26));
+      this.jButton2.setMinimumSize(new Dimension(100, 26));
+      this.jButton2.setFont(new Font("Dialog", 1, 10));
+      this.jButton2.setMaximumSize(new Dimension(100, 26));
+    }
+    return this.jButton2;
+  }
 
-	private JList getLstMessages() {
-		if (this.lstMessages == null) {
-			this.lstMessages = new JList(this.model);
-		}
-		return this.lstMessages;
-	}
+  private JPanel getJPanel3() {
+    if (this.jPanel3 == null) {
+      GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
+      gridBagConstraints21.fill = 1;
+      gridBagConstraints21.weighty = 1.0D;
+      gridBagConstraints21.insets = new Insets(5, 5, 5, 5);
+      gridBagConstraints21.gridwidth = 1;
+      gridBagConstraints21.weightx = 1.0D;
+      GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
+      gridBagConstraints12.gridx = 1;
+      gridBagConstraints12.fill = 3;
+      gridBagConstraints12.insets = new Insets(5, 5, 5, 5);
+      gridBagConstraints12.gridy = 0;
+      GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
+      gridBagConstraints11.gridx = 0;
+      gridBagConstraints11.gridheight = 3;
+      gridBagConstraints11.gridy = 0;
+      this.jPanel3 = new JPanel();
+      this.jPanel3.setLayout(new GridBagLayout());
+      this.jPanel3.setPreferredSize(new Dimension(510, 210));
+      this.jPanel3.setMinimumSize(new Dimension(510, 60));
+      this.jPanel3.setMaximumSize(new Dimension(510, 60));
+      this.jPanel3.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+      jPanel3.add(getJScrollPane(), gridBagConstraints21);
+      this.jPanel3.add(getBtnClear(), gridBagConstraints12);
+    }
+    return this.jPanel3;
+  }
 
-	private JButton getBtnReport() {
-		if (this.btnReport == null) {
-			this.btnReport = new JButton();
-			btnReport.setAction(new ActionReport(this));
-			this.btnReport.setPreferredSize(new Dimension(100, 26));
-			this.btnReport.setMinimumSize(new Dimension(100, 26));
-			this.btnReport.setMaximumSize(new Dimension(100, 26));
-			this.btnReport.setFont(new Font("Dialog", 1, 10));
-			this.btnReport.setText("Reporte");
-		}
+  private JButton getBtnNumerados() {
+    if (this.btnNumerados == null) {
+      this.btnNumerados = new JButton();
+      btnNumerados.setAction(new ActionNumerados(this));
+      this.btnNumerados.setText("Numerados");
+      this.btnNumerados.setPreferredSize(new Dimension(100, 26));
+      this.btnNumerados.setMinimumSize(new Dimension(100, 26));
+      this.btnNumerados.setFont(new Font("Dialog", 1, 10));
+      this.btnNumerados.setMaximumSize(new Dimension(100, 26));
+    }
+    return this.btnNumerados;
+  }
 
-		return this.btnReport;
-	}
+  private JList getLstMessages() {
+    if (this.lstMessages == null) {
+      this.lstMessages = new JList(this.model);
+    }
+    return this.lstMessages;
+  }
 
-	private JButton getBtnClone() {
-		if (this.btnClone == null) {
-			this.btnClone = new JButton();
-			btnClone.setAction(new ActionClone(this));
-			this.btnClone.setText("Clonar");
-			this.btnClone.setMinimumSize(new Dimension(100, 26));
-			this.btnClone.setMaximumSize(new Dimension(100, 26));
-			this.btnClone.setFont(new Font("Dialog", 1, 10));
-			this.btnClone.setPreferredSize(new Dimension(100, 26));
-		}
+  private JButton getBtnReport() {
+    if (this.btnReport == null) {
+      this.btnReport = new JButton();
+      btnReport.setAction(new ActionReport(this));
+      this.btnReport.setPreferredSize(new Dimension(100, 26));
+      this.btnReport.setMinimumSize(new Dimension(100, 26));
+      this.btnReport.setMaximumSize(new Dimension(100, 26));
+      this.btnReport.setFont(new Font("Dialog", 1, 10));
+      this.btnReport.setText("Reporte");
+    }
 
-		return this.btnClone;
-	}
+    return this.btnReport;
+  }
 
-	private JCalendarCombo getCalendar() {
-		if (this.calendar == null) {
-			BasicComboBoxRenderer.UIResource UIResource = new BasicComboBoxRenderer.UIResource();
-			UIResource.setFont(new Font("Dialog", 1, 8));
-			UIResource.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
-			UIResource.setIconTextGap(2);
-			this.calendar = new JCalendarCombo();
-			this.calendar.setFont(new Font("Dialog", 1, 10));
-			this.calendar.setMaximumRowCount(4);
-			this.calendar.setMinimumSize(new Dimension(161, 23));
-			this.calendar.setMaximumSize(new Dimension(161, 23));
-			this.calendar.setPreferredSize(new Dimension(161, 23));
-			this.calendar.setRenderer(UIResource);
-			calendar.addActionListener(new ActionListener() {
-			    
-			    public void actionPerformed(ActionEvent e) {
-				fechaReporte = calendar.getDate();
-			    }
-			});
-			fechaReporte = calendar.getDate();
-		}
-		return this.calendar;
-	}
+  private JButton getBtnClone() {
+    if (this.btnClone == null) {
+      this.btnClone = new JButton();
+      btnClone.setAction(new ActionClone(this));
+      this.btnClone.setText("Clonar");
+      this.btnClone.setMinimumSize(new Dimension(100, 26));
+      this.btnClone.setMaximumSize(new Dimension(100, 26));
+      this.btnClone.setFont(new Font("Dialog", 1, 10));
+      this.btnClone.setPreferredSize(new Dimension(100, 26));
+    }
 
-	private JButton getBtnClear() {
-		if (this.btnClear == null) {
-			this.btnClear = new JButton();
-			this.btnClear.setText("Limpiar");
-			this.btnClear.setFont(new Font("Dialog", 1, 10));
-			this.btnClear.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					model.clear();
-				}
-			});
-		}
-		return this.btnClear;
-	}
+    return this.btnClone;
+  }
 
-	private JScrollPane getJScrollPane() {
-		if (this.jScrollPane == null) {
-			this.jScrollPane = new JScrollPane();
-			this.jScrollPane.setViewportView(getLstMessages());
-		}
-		return this.jScrollPane;
-	}
+  private JCalendarCombo getCalendar() {
+    if (this.calendar == null) {
+      BasicComboBoxRenderer.UIResource UIResource = new BasicComboBoxRenderer.UIResource();
+      UIResource.setFont(new Font("Dialog", 1, 8));
+      UIResource.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+      UIResource.setIconTextGap(2);
+      this.calendar = new JCalendarCombo();
+      this.calendar.setFont(new Font("Dialog", 1, 10));
+      this.calendar.setMaximumRowCount(4);
+      this.calendar.setMinimumSize(new Dimension(161, 23));
+      this.calendar.setMaximumSize(new Dimension(161, 23));
+      this.calendar.setPreferredSize(new Dimension(161, 23));
+      this.calendar.setRenderer(UIResource);
+      calendar.addActionListener(new ActionListener() {
 
-	private JCalendarCombo getCmbFechaFacturacion() {
-		if (this.cmbFechaFacturacion == null) {
-			this.cmbFechaFacturacion = new JCalendarCombo();
-			cmbFechaFacturacion.setFont(new Font("Dialog", Font.BOLD, 10));
-			cmbFechaFacturacion.setMaximumSize(new Dimension(161, 23));
-			this.cmbFechaFacturacion.addDateListener(new DateListener() {
-				public void dateChanged(DateEvent e) {
-					if (SincronizacionMMI.this.data != null) {
-						FechaFormateada f = new FechaFormateada();
-						f.setTime(SincronizacionMMI.this.cmbFechaFacturacion
-								.getDate().getTime());
-						data.setFecha(f);
-						fechaFacturacion = cmbFechaFacturacion.getDate();
-					}
-				}
-			});
-		}
-		return this.cmbFechaFacturacion;
-	}
+        public void actionPerformed(ActionEvent e) {
+          fechaReporte = calendar.getDate();
+        }
+      });
+      fechaReporte = calendar.getDate();
+    }
+    return this.calendar;
+  }
 
-	/**
-	 * This method initializes btnRepCreditos
-	 * 
-	 * @return javax.swing.JButton
-	 */
-	private JButton getBtnRepCreditos() {
-		if (btnRepCreditos == null) {
-			btnRepCreditos = new JButton();
-			btnRepCreditos.setAction(new ActionCreditos(this));
-			btnRepCreditos.setFont(new Font("Dialog", 1, 10));
-			btnRepCreditos.setMinimumSize(new Dimension(100, 26));
-			btnRepCreditos.setPreferredSize(new Dimension(100, 26));
-			btnRepCreditos.setText("Créditos");
-			btnRepCreditos.setMaximumSize(new Dimension(100, 26));
-		}
-		return btnRepCreditos;
-	}
+  private JButton getBtnClear() {
+    if (this.btnClear == null) {
+      this.btnClear = new JButton();
+      this.btnClear.setText("Limpiar");
+      this.btnClear.setFont(new Font("Dialog", 1, 10));
+      this.btnClear.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          model.clear();
+        }
+      });
+    }
+    return this.btnClear;
+  }
 
-	/**
-	 * This method initializes mnuSistema
-	 * 
-	 * @return javax.swing.JMenuBar
-	 */
-	private JMenuBar getMnuSistema() {
-		if (mnuSistema == null) {
-			mnuSistema = new JMenuBar();
-			mnuSistema.setPreferredSize(new Dimension(50, 20));
-			mnuSistema.add(getMnuPPal());
-		}
-		return mnuSistema;
-	}
+  private JScrollPane getJScrollPane() {
+    if (this.jScrollPane == null) {
+      this.jScrollPane = new JScrollPane();
+      this.jScrollPane.setViewportView(getLstMessages());
+    }
+    return this.jScrollPane;
+  }
 
-	/**
-	 * This method initializes mnuPPal
-	 * 
-	 * @return javax.swing.JMenu
-	 */
-	private JMenu getMnuPPal() {
-		if (mnuPPal == null) {
-			mnuPPal = new JMenu();
-			mnuPPal.setText("Opciones");
-			mnuPPal.add(getMnuReporte());
-			mnuPPal.add(getMnuCreditos());
-			mnuPPal.add(getMnuNumerados());
-			mnuPPal.add(getMnuClonar());
-			mnuPPal.add(getJSeparator());
-			mnuPPal.add(getMnuSalir());
-		}
-		return mnuPPal;
-	}
+  private JCalendarCombo getCmbFechaFacturacion() {
+    if (this.cmbFechaFacturacion == null) {
+      this.cmbFechaFacturacion = new JCalendarCombo();
+      cmbFechaFacturacion.setFont(new Font("Dialog", Font.BOLD, 10));
+      cmbFechaFacturacion.setMaximumSize(new Dimension(161, 23));
+      this.cmbFechaFacturacion.addDateListener(new DateListener() {
+        public void dateChanged(DateEvent e) {
+          if (SincronizacionMMI.this.data != null) {
+            FechaFormateada f = new FechaFormateada();
+            f.setTime(SincronizacionMMI.this.cmbFechaFacturacion.getDate().getTime());
+            data.setFecha(f);
+            fechaFacturacion = cmbFechaFacturacion.getDate();
+          }
+        }
+      });
+    }
+    return this.cmbFechaFacturacion;
+  }
 
-	/**
-	 * This method initializes mnuReporte
-	 * 
-	 * @return javax.swing.JMenuItem
-	 */
-	private JMenuItem getMnuReporte() {
-		if (mnuReporte == null) {
-			mnuReporte = new JMenuItem();
-			mnuReporte.setAction(new ActionReport(this));
-			mnuReporte.setText("Reporte");
-		}
-		return mnuReporte;
-	}
+  /**
+   * This method initializes btnRepCreditos
+   * 
+   * @return javax.swing.JButton
+   */
+  private JButton getBtnRepCreditos() {
+    if (btnRepCreditos == null) {
+      btnRepCreditos = new JButton();
+      btnRepCreditos.setAction(new ActionCreditos(this));
+      btnRepCreditos.setFont(new Font("Dialog", 1, 10));
+      btnRepCreditos.setMinimumSize(new Dimension(100, 26));
+      btnRepCreditos.setPreferredSize(new Dimension(100, 26));
+      btnRepCreditos.setText("CrÃ©ditos");
+      btnRepCreditos.setMaximumSize(new Dimension(100, 26));
+    }
+    return btnRepCreditos;
+  }
 
-	/**
-	 * This method initializes mnuCreditos
-	 * 
-	 * @return javax.swing.JMenuItem
-	 */
-	private JMenuItem getMnuCreditos() {
-		if (mnuCreditos == null) {
-			mnuCreditos = new JMenuItem();
-			mnuCreditos.setAction(new ActionCreditos(this));
-			mnuCreditos.setText("Créditos");
-		}
-		return mnuCreditos;
-	}
+  /**
+   * This method initializes mnuSistema
+   * 
+   * @return javax.swing.JMenuBar
+   */
+  private JMenuBar getMnuSistema() {
+    if (mnuSistema == null) {
+      mnuSistema = new JMenuBar();
+      mnuSistema.setPreferredSize(new Dimension(50, 20));
+      mnuSistema.add(getMnuPPal());
+    }
+    return mnuSistema;
+  }
 
-	/**
-	 * This method initializes mnuNumerados
-	 * 
-	 * @return javax.swing.JMenuItem
-	 */
-	private JMenuItem getMnuNumerados() {
-		if (mnuNumerados == null) {
-			mnuNumerados = new JMenuItem();
-			mnuNumerados.setAction(new ActionNumerados(this));
-			mnuNumerados.setText("Numerados");
-		}
-		return mnuNumerados;
-	}
+  /**
+   * This method initializes mnuPPal
+   * 
+   * @return javax.swing.JMenu
+   */
+  private JMenu getMnuPPal() {
+    if (mnuPPal == null) {
+      mnuPPal = new JMenu();
+      mnuPPal.setText("Opciones");
+      mnuPPal.add(getMnuReporte());
+      mnuPPal.add(getMnuCreditos());
+      mnuPPal.add(getMnuNumerados());
+      mnuPPal.add(getMnuClonar());
+      mnuPPal.add(getJSeparator());
+      mnuPPal.add(getMnuSalir());
+    }
+    return mnuPPal;
+  }
 
-	/**
-	 * This method initializes mnuClonar
-	 * 
-	 * @return javax.swing.JMenuItem
-	 */
-	private JMenuItem getMnuClonar() {
-		if (mnuClonar == null) {
-			mnuClonar = new JMenuItem();
-			mnuClonar.setAction(new ActionClone(this));
-			mnuClonar.setText("Clonar");
-		}
-		return mnuClonar;
-	}
+  /**
+   * This method initializes mnuReporte
+   * 
+   * @return javax.swing.JMenuItem
+   */
+  private JMenuItem getMnuReporte() {
+    if (mnuReporte == null) {
+      mnuReporte = new JMenuItem();
+      mnuReporte.setAction(new ActionReport(this));
+      mnuReporte.setText("Reporte");
+    }
+    return mnuReporte;
+  }
 
-	/**
-	 * This method initializes mnuSalir
-	 * 
-	 * @return javax.swing.JMenuItem
-	 */
-	private JMenuItem getMnuSalir() {
-		if (mnuSalir == null) {
-			mnuSalir = new JMenuItem();
-			mnuSalir.setAction(new ActionSalir(this));
-			mnuSalir.setText("Salir");
-		}
-		return mnuSalir;
-	}
+  /**
+   * This method initializes mnuCreditos
+   * 
+   * @return javax.swing.JMenuItem
+   */
+  private JMenuItem getMnuCreditos() {
+    if (mnuCreditos == null) {
+      mnuCreditos = new JMenuItem();
+      mnuCreditos.setAction(new ActionCreditos(this));
+      mnuCreditos.setText("CrÃ©ditos");
+    }
+    return mnuCreditos;
+  }
 
-	/**
-	 * This method initializes jSeparator
-	 * 
-	 * @return javax.swing.JSeparator
-	 */
-	private JSeparator getJSeparator() {
-		if (jSeparator == null) {
-			jSeparator = new JSeparator();
-		}
-		return jSeparator;
-	}
+  /**
+   * This method initializes mnuNumerados
+   * 
+   * @return javax.swing.JMenuItem
+   */
+  private JMenuItem getMnuNumerados() {
+    if (mnuNumerados == null) {
+      mnuNumerados = new JMenuItem();
+      mnuNumerados.setAction(new ActionNumerados(this));
+      mnuNumerados.setText("Numerados");
+    }
+    return mnuNumerados;
+  }
 
-	/**
-	 * This method initializes jPanel4
-	 * 
-	 * @return javax.swing.JPanel
-	 */
-	private JPanel getJPanel4() {
-		if (jPanel4 == null) {
-			jPanel4 = new JPanel();
-			jPanel4.setLayout(new GridBagLayout());
-			jPanel4.setPreferredSize(new Dimension(150, 60));
-		}
-		return jPanel4;
-	}
+  /**
+   * This method initializes mnuClonar
+   * 
+   * @return javax.swing.JMenuItem
+   */
+  private JMenuItem getMnuClonar() {
+    if (mnuClonar == null) {
+      mnuClonar = new JMenuItem();
+      mnuClonar.setAction(new ActionClone(this));
+      mnuClonar.setText("Clonar");
+    }
+    return mnuClonar;
+  }
 
-	public static void main(String[] args) {
-		JFrame frame = new SincronizacionMMI();
-		frame.setDefaultCloseOperation(3);
-		frame.setVisible(true);
-	}
+  /**
+   * This method initializes mnuSalir
+   * 
+   * @return javax.swing.JMenuItem
+   */
+  private JMenuItem getMnuSalir() {
+    if (mnuSalir == null) {
+      mnuSalir = new JMenuItem();
+      mnuSalir.setAction(new ActionSalir(this));
+      mnuSalir.setText("Salir");
+    }
+    return mnuSalir;
+  }
 
-	public void onMessage(EventMsg evt) {
-		if (evt != null) {
-			this.model.addElement(evt.getMessage());
-			this.lstMessages.repaint();
-		}
-	}
+  /**
+   * This method initializes jSeparator
+   * 
+   * @return javax.swing.JSeparator
+   */
+  private JSeparator getJSeparator() {
+    if (jSeparator == null) {
+      jSeparator = new JSeparator();
+    }
+    return jSeparator;
+  }
 
-	public void graphicInit() {
-		Rectangle virtualBounds = new Rectangle();
-		GraphicsEnvironment ge = GraphicsEnvironment
-				.getLocalGraphicsEnvironment();
-		GraphicsDevice[] gs = ge.getScreenDevices();
-		int n = 0;
-		GraphicsDevice gd = gs[n];
-		GraphicsConfiguration[] gc = gd.getConfigurations();
+  /**
+   * This method initializes jPanel4
+   * 
+   * @return javax.swing.JPanel
+   */
+  private JPanel getJPanel4() {
+    if (jPanel4 == null) {
+      jPanel4 = new JPanel();
+      jPanel4.setLayout(new GridBagLayout());
+      jPanel4.setPreferredSize(new Dimension(150, 60));
+    }
+    return jPanel4;
+  }
 
-		virtualBounds = virtualBounds.union(gc[0].getBounds());
+  public static void main(String[] args) {
+    JFrame frame = new SincronizacionMMI();
+    frame.setDefaultCloseOperation(3);
+    frame.setVisible(true);
+  }
 
-		int topX = (int) virtualBounds.getCenterX() - getWidth() / 2;
-		int topY = (int) virtualBounds.getCenterY() - getHeight() / 2;
+  public void onMessage(EventMsg evt) {
+    if (evt != null) {
+      this.model.addElement(evt.getMessage());
+      this.lstMessages.repaint();
+    }
+  }
 
-		if (topX < 0) {
-			topX = 0;
-		}
-		if (topY < 0) {
-			topY = 0;
-		}
+  public void graphicInit() {
+    Rectangle virtualBounds = new Rectangle();
+    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    GraphicsDevice[] gs = ge.getScreenDevices();
+    int n = 0;
+    GraphicsDevice gd = gs[n];
+    GraphicsConfiguration[] gc = gd.getConfigurations();
 
-		setBounds(topX, topY, getWidth(), getHeight());
-	}
+    virtualBounds = virtualBounds.union(gc[0].getBounds());
 
-	public void colne() {
-		if (SincronizacionMMI.this.dlg == null) {
-			dlg = new DlgClonarFactura(SincronizacionMMI.this);
-		}
-		dlg.clear();
+    int topX = (int) virtualBounds.getCenterX() - getWidth() / 2;
+    int topY = (int) virtualBounds.getCenterY() - getHeight() / 2;
 
-		int topX = getLocation().x + getWidth() / 2 - dlg.getWidth() / 2;
-		int topY = getLocation().y + getHeight() / 2 - dlg.getHeight() / 2;
-		dlg.setLocation(topX, topY);
-		dlg.setVisible(true);
+    if (topX < 0) {
+      topX = 0;
+    }
+    if (topY < 0) {
+      topY = 0;
+    }
 
-	}
+    setBounds(topX, topY, getWidth(), getHeight());
+  }
 
-	public void numerados() {
-		ControladorNumerados controlador = new ControladorNumerados();
-		DialogNumerados frmQuesos = controlador.getView();
-		frmQuesos.setVisible(true);
+  public void colne() {
+    if (SincronizacionMMI.this.dlg == null) {
+      dlg = new DlgClonarFactura(SincronizacionMMI.this);
+    }
+    dlg.clear();
 
-	}
+    int topX = getLocation().x + getWidth() / 2 - dlg.getWidth() / 2;
+    int topY = getLocation().y + getHeight() / 2 - dlg.getHeight() / 2;
+    dlg.setLocation(topX, topY);
+    dlg.setVisible(true);
 
-	public void reporte() {
-		HojaRuta.getInstance().construirReporte(fechaReporte);
-	}
+  }
 
-	public void creditos() {
-		ListadoCreditos.getInstance().construirReporte(
-				getCalendar().getCalendar());
-	}
+  public void numerados() {
+    ControladorNumerados controlador = new ControladorNumerados();
+    DialogNumerados frmQuesos = controlador.getView();
+    frmQuesos.setVisible(true);
 
-	public void salir() {
-		if (SincronizacionMMI.this.data != null) {
-			data.close();
-		}
-		System.exit(0);
-	}
+  }
+
+  public void reporte() {
+    HojaRuta.getInstance().construirReporte(fechaReporte);
+  }
+
+  public void creditos() {
+    ListadoCreditos.getInstance().construirReporte(getCalendar().getCalendar());
+  }
+
+  public void salir() {
+    if (SincronizacionMMI.this.data != null) {
+      data.close();
+    }
+    System.exit(0);
+  }
 } // @jve:decl-index=0:visual-constraint="19,27"

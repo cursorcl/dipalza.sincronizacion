@@ -29,7 +29,7 @@ import com.grupo.utilitarios.FechaFormateada;
 
 /**
  * Clase del servidor donde se reciben los mensajes 
- * de solicitud de clientes y productos, actualización de clientes
+ * de solicitud de clientes y productos, actualizaciï¿½n de clientes
  * y de almacenamiento de ventas.
  * @author cursor
  *
@@ -45,7 +45,7 @@ public class ProcessorServer extends EventEmisor implements Notificable {
 
 	private int countItemsVenta = 0;
 	private int itemsVentaLlegados = 0;
-	private ConnectionClient cliente;
+	private ConnectionClient connectionClient;
 
 	public ProcessorServer(FechaFormateada fecha) {
 		this.fecha = fecha;
@@ -64,28 +64,28 @@ public class ProcessorServer extends EventEmisor implements Notificable {
 		
 		VectorClientes vClientes = this.data.getClientes(palm.getIdUnit(), palm
 				.getIdRuta(), palm.getIdRutaAdicional());
-		log.info("Envío de clientes  " + palm.toString() + " #=" + vClientes.size());
+		log.info("EnvÃ­o de clientes  " + palm.toString() + " #=" + vClientes.size());
 
-		MessageToTransmit m = new MessageToTransmit();
-		m.setIdPalm(palm);
-		m.setType(EMessagesTypes.MSG_INFORMATIVE);
+		MessageToTransmit message = new MessageToTransmit();
+		message.setIdPalm(palm);
+		message.setType(EMessagesTypes.MSG_INFORMATIVE);
 		MsgInformaDatos info = new MsgInformaDatos();
 		info.setName(Cliente.class.getName());
 		info.setCantidad(vClientes.size());
-		m.setData(info);
-		cliente.send(m);
+		message.setData(info);
+		connectionClient.send(message);
 
-		m = new MessageToTransmit();
-		m.setIdPalm(palm);
-		m.setType(EMessagesTypes.MSG_VECTORCLIENTES);
-		m.setData(vClientes);
-		cliente.send(m);
+		message = new MessageToTransmit();
+		message.setIdPalm(palm);
+		message.setType(EMessagesTypes.MSG_VECTORCLIENTES);
+		message.setData(vClientes);
+		connectionClient.send(message);
 
-		m = new MessageToTransmit();
-		m.setIdPalm(palm);
-		m.setType(EMessagesTypes.MSG_INITIALIZE_CLIENTE_FINALIZED);
-		m.setData(null);
-		cliente.send(m);
+		message = new MessageToTransmit();
+		message.setIdPalm(palm);
+		message.setType(EMessagesTypes.MSG_INITIALIZE_CLIENTE_FINALIZED);
+		message.setData(null);
+		connectionClient.send(message);
 
 	}
 
@@ -99,19 +99,19 @@ public class ProcessorServer extends EventEmisor implements Notificable {
 		info.setName(Producto.class.getName());
 		info.setCantidad(vProductos.size());
 		m.setData(info);
-		cliente.send(m);
+		connectionClient.send(m);
 		
 		m = new MessageToTransmit();
 		m.setIdPalm(palm);
 		m.setType(EMessagesTypes.MSG_VECTORPRODUCTOS);
 		m.setData(vProductos);
-		cliente.send(m);
+		connectionClient.send(m);
 		
 		m = new MessageToTransmit();
 		m.setIdPalm(palm);
 		m.setType(EMessagesTypes.MSG_INITIALIZE_PRODUCTO_FINALIZED);
 		m.setData(null);
-		cliente.send(m);
+		connectionClient.send(m);
 	}
 
 	public synchronized void addEventMsgListener(EventMsgListener listener) {
@@ -137,7 +137,7 @@ public class ProcessorServer extends EventEmisor implements Notificable {
 			ConnectionClientEvent ev = (ConnectionClientEvent) event;
 			notify("Conectado cliente:" + ev.getClient().getSource());
 			log.debug("Conectado cliente:" + ev.getClient().getSource());
-			this.cliente = ev.getClient();
+			this.connectionClient = ev.getClient();
 		} else if (event instanceof MessagesClientEvent) {
 			MessagesClientEvent ev = (MessagesClientEvent) event;
 			MessageToTransmit m = (MessageToTransmit) ev.getData();
@@ -148,12 +148,12 @@ public class ProcessorServer extends EventEmisor implements Notificable {
 				try {
 					sendClientes(m.getIdPalm());
 				} catch (Exception e) {
-					log.error("Error en el envío de los datos de cliente.");
+					log.error("Error en el envÃ­o de los datos de cliente.");
 				}
 				try {
 					sendProductos(m.getIdPalm());
 				} catch (Exception e) {
-					log.error("Error en el envío de los datos de productos.");
+					log.error("Error en el envï¿½o de los datos de productos.");
 				}
 				break;
 				
@@ -163,7 +163,7 @@ public class ProcessorServer extends EventEmisor implements Notificable {
 					this.data.setCliente(c, m.getIdPalm().getIdUnit(), m
 							.getIdPalm().getIdRuta());
 				} catch (Exception e) {
-					log.error("Error en la recepción de datos de cliente.");
+					log.error("Error en la recepciÃ³n de datos de cliente.");
 				}
 				break;
 			case MSG_ENCABEZADO:
