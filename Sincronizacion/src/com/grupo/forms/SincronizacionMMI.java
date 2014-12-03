@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.EventObject;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
@@ -42,6 +43,9 @@ import org.freixas.jcalendar.DateEvent;
 import org.freixas.jcalendar.DateListener;
 import org.freixas.jcalendar.JCalendarCombo;
 
+import com.grupo.biblioteca.server.ConnectionServer;
+import com.grupo.biblioteca.server.events.ConnectionServerEvent;
+import com.grupo.biblioteca.server.events.Notificable;
 import com.grupo.data.ProcessorServer;
 import com.grupo.forms.actions.ActionClone;
 import com.grupo.forms.actions.ActionCreditos;
@@ -56,7 +60,7 @@ import com.grupo.util.EventMsg;
 import com.grupo.util.EventMsgListener;
 import com.grupo.utilitarios.FechaFormateada;
 
-public class SincronizacionMMI extends JFrame implements EventMsgListener {
+public class SincronizacionMMI extends JFrame implements EventMsgListener, Notificable {
   private static final long serialVersionUID = 1L;
   static Logger logger = Logger.getLogger(SincronizacionMMI.class);
 
@@ -107,23 +111,16 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener {
         System.exit(0);
       }
     });
-    this.data = new ProcessorServer(new FechaFormateada(this.cmbFechaFacturacion.getDate()));
+    ConnectionServer server = new ConnectionServer();
+    server.addNotificable(this);
+    this.data = new ProcessorServer(new FechaFormateada(this.cmbFechaFacturacion.getDate()), server);
     this.data.addEventMsgListener(this);
     HojaRuta.getInstance().addEventMsgListener(this);
   }
 
   private void initialize() {
-    String ipAddress = "localhost:5500";
-    try {
-      InetAddress thisIp = InetAddress.getLocalHost();
-      ipAddress = InetAddress.getLocalHost() + ":5500";
-    } catch (UnknownHostException e) {
-      e.printStackTrace();
-    }
-
     setSize(new Dimension(556, 410));
     this.setJMenuBar(getMnuSistema());
-    setTitle("Ventas " + ipAddress);
     setContentPane(getJPanel());
     graphicInit();
     setResizable(false);
@@ -627,5 +624,15 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener {
       data.close();
     }
     System.exit(0);
+  }
+
+  public void handle(EventObject paramEventObject) {
+    if(paramEventObject instanceof ConnectionServerEvent)
+    {
+      ConnectionServerEvent event =  (ConnectionServerEvent)paramEventObject;
+      InetAddress thisIp = event.getServer().getInetAddress();
+      String ipAddress = String.format("%s:%d", thisIp.toString(), event.getServer().getLocalPort());
+      setTitle("Ventas " + ipAddress);
+    }
   }
 } // @jve:decl-index=0:visual-constraint="19,27"

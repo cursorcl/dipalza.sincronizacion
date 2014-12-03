@@ -176,7 +176,7 @@ FROM
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="29" splitType="Prevent">
+		<band height="31" splitType="Prevent">
 			<textField isBlankWhenNull="false">
 				<reportElement uuid="4ed00211-5ee9-4b1d-ac40-55a12938f111" key="textField" stretchType="RelativeToBandHeight" x="6" y="4" width="64" height="21" forecolor="#000000"/>
 				<box>

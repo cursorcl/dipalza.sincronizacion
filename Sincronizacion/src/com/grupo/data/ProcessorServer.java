@@ -47,10 +47,10 @@ public class ProcessorServer extends EventEmisor implements Notificable {
 	private int itemsVentaLlegados = 0;
 	private ConnectionClient connectionClient;
 
-	public ProcessorServer(FechaFormateada fecha) {
+	public ProcessorServer(FechaFormateada fecha, ConnectionServer server) {
 		this.fecha = fecha;
 		this.data = DataSQL.getInstance();
-		this.server = new ConnectionServer();
+		this.server = server;
 		this.server.addNotificable(this);
 	}
 

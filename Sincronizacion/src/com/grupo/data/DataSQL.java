@@ -104,8 +104,8 @@ public class DataSQL extends EventEmisor implements IProcessor {
       String cod = "";
       while (res.next()) {
         rut = res.getString("rut");
-        razon = res.getString("razon");
         cod = res.getString("codigo");
+        razon = res.getString("razon") + " " + cod;
         direccion = res.getString("direccion");
         ciudad = res.getString("ciudad");
         comuna = res.getString("comuna");
@@ -327,7 +327,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
               }
               for (j = 1; (j <= 25) && (nItemes < filasV.size()); j++) {
                 ItemVenta iv = (ItemVenta) filasV.elementAt(nItemes);
-                ResultDetalle r = factura.insertDetalleVenta(iv, id, j, true);
+                ResultDetalle r = factura.insertDetalleVenta(iv, id, j);
                 if ((r.getResult() == 1) || (r.getResult() == 2)) {
                   allItems = false;
                   Producto pr = factura.getDatosProducto(iv.getArticulo());
@@ -343,7 +343,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
               ila = factura.insertIla(nroFactura, id);
               factura.insertTotalDocumento(id, neto, v.getPorcentajeIva(), ila);
               factura.insertCtaDcto(nroFactura, v, neto, ila);
-              factura.insertDatosCliente(rut, id, condicion, dias);
+              factura.insertDatosCliente(rut, id, condicion, dias, v.getCodigoCliente()); // AQUI
               factura.insertFolios(nroFactura);
 
               FacturaItemModel fModel = getFacturaModel(nroFactura, allItems, v, neto);
@@ -421,7 +421,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
 
           for (j = 1; j <= 25 && nItemes < itemes.size(); ++nItemes, ++j) {
             ItemVenta iv = itemes.elementAt(nItemes);
-            ResultDetalle r = factura.insertDetalleVenta(iv, id, j, true);
+            ResultDetalle r = factura.insertDetalleVenta(iv, id, j);
             if ((r.getResult() == 1) || (r.getResult() == 2)) {
               allItems = false;
               Producto pr = factura.getDatosProducto(iv.getArticulo());
@@ -436,7 +436,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
           factura.insertTotalDocumento(id, neto, encabezado.getPorcentajeIva(), ila);
 
           factura.insertCtaDcto(nroFactura, encabezado, neto, ila);
-          factura.insertDatosCliente(rut, id, condicion, dias);
+          factura.insertDatosCliente(rut, id, condicion, dias, encabezado.getCodigoCliente()); //AQUI
           factura.insertFolios(nroFactura);
           FacturaItemModel fModel = getFacturaModel(nroFactura, allItems, encabezado, neto);
           mmiFaturas.addItemVenta(fModel);
@@ -460,7 +460,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
   private FacturaItemModel getFacturaModel(String nroFactura, boolean allItems, EncabezadoVenta e,
       float neto) {
     FacturaItemModel fModel = new FacturaItemModel();
-    fModel.setCliente(e.getNombreCliente());
+    fModel.setCliente(e.getNombreCliente() + " " + e.getCodigoCliente());
     fModel.setNumero(Integer.parseInt(nroFactura));
     float totalIva = e.getPorcentajeIva() / 100.0F * neto;
     fModel.setMontoNeto(neto);
