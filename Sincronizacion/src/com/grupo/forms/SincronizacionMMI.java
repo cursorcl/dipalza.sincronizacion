@@ -612,6 +612,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
   }
 
   public void reporte() {
+    fechaReporte = calendar.getDate();
     HojaRuta.getInstance().construirReporte(fechaReporte);
   }
 
