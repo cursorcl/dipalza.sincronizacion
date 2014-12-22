@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Calendar;
 
@@ -102,15 +103,18 @@ public class FacturaSQL {
         PreparedStatement pstmt =
             this.con
                 .prepareStatement("insert into encabezadocumento (fecha, vence, afectoexento, rut, local, id, tipo, numero, codigo) values  (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        pstmt.setString(1, pEncabezado.getFecha().toString());
-        pstmt.setString(2, addDay(pEncabezado).toString());
+
+        Timestamp dFecha = new Timestamp(pEncabezado.getFecha().getTime());
+        Timestamp dVence = new Timestamp(addDay(pEncabezado).getTime());
+        pstmt.setTimestamp(1, dFecha);
+        pstmt.setTimestamp(2, dVence);
         pstmt.setString(3, "A");
         pstmt.setString(4, pEncabezado.getRut());
         pstmt.setString(5, "000");
         pstmt.setString(6, result);
         pstmt.setString(7, "06");
         pstmt.setString(8, getNumero());
-        pstmt.setString(9, pEncabezado.getCodigoCliente());
+        pstmt.setString(9, pEncabezado.getCodigoCliente() + " ");
         pstmt.executeUpdate();
       } catch (SQLException e) {
         e.printStackTrace();
@@ -364,10 +368,12 @@ public class FacturaSQL {
       PreparedStatement pstmtIns =
           this.con
               .prepareStatement("insert into ctadocto (rut_cliente, fecha_vencimiento, comision, fecha_ingreso, vendedor, valor_bruto, valor_iva, valor_neto, tipo, numero, codigo_cliente, local_venta, valor_ila) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+      Timestamp dVencimiento = new Timestamp(addDay(e).getTime());
+      Timestamp dIngreso = new Timestamp(e.getFecha().getTime());
       pstmtIns.setString(1, e.getRut());
-      pstmtIns.setString(2, addDay(e).toString());
+      pstmtIns.setTimestamp(2, dVencimiento);
       pstmtIns.setFloat(3, comision);
-      pstmtIns.setString(4, e.getFecha().toString());
+      pstmtIns.setTimestamp(4, dIngreso);
       pstmtIns.setString(5, e.getVendedor());
       pstmtIns.setFloat(6, bruto);
       pstmtIns.setFloat(7, iva);

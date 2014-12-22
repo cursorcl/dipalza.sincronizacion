@@ -141,7 +141,7 @@ public class HojaRuta extends EventEmisor {
   private String ordenarNumeros(String descrp, String descOriginal) {
 
     String resultado = "";
-    if (!descOriginal.trim().equalsIgnoreCase(descrp.trim())) {
+    if (!descOriginal.trim().equalsIgnoreCase(descrp.trim()) ) {
       int l = descOriginal.length();
       String delta = descrp.trim().substring(l);
       String[] numeros = delta.trim().split("-");
