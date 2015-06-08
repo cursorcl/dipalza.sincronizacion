@@ -232,14 +232,6 @@ public class DataSQL extends EventEmisor implements IProcessor {
     return v;
   }
 
-  @SuppressWarnings("unchecked")
-  public void setClientes(Vector v, String gVend, String gRuta) {
-    for (int i = 0; i < v.size(); ++i) {
-      Cliente cl = new Cliente();
-      cl.decode((byte[]) v.elementAt(i));
-      setCliente(cl, gVend, gRuta);
-    }
-  }
 
   public void setCliente(Cliente cl, String gVend, String gRuta) {
     PreparedStatement pstmt = null;
@@ -640,10 +632,23 @@ public class DataSQL extends EventEmisor implements IProcessor {
   }
 
   public void addNumerado(ProductosNumerados numerado) {
+    String strFindNumero = "select * from articulosnumerados where articulo = (?)";
+    String strInsertNumero = "insert into articulosnumerados (articulo) values (?)";
     String strInsert = "insert into numerados (articulo, peso, numero) values (?, ?, ?)";
 
     try {
-      PreparedStatement pstmt = con.prepareStatement(strInsert);
+      PreparedStatement pstmt = con.prepareStatement(strFindNumero);
+      pstmt.setString(1, numerado.getArticulo());
+      ResultSet res = pstmt.executeQuery();
+      if(!res.next())
+      {
+        PreparedStatement pstmtInsert = con.prepareStatement(strInsertNumero);
+        pstmtInsert.setString(1, numerado.getArticulo());
+        pstmtInsert.executeUpdate();
+        pstmtInsert.close();
+      }
+      pstmt.close();
+      pstmt = con.prepareStatement(strInsert);
       pstmt.setString(1, numerado.getArticulo());
       pstmt.setFloat(2, numerado.getPesoQueso());
       pstmt.setInt(3, numerado.getCorrelativo());

@@ -347,7 +347,7 @@ public class Numerados extends JPanel implements ActionListener, FocusListener {
         controlador.eliminarTodos();
       }
     } else if (PRINT.equals(actionEvent.getActionCommand())) {
-      HojaRuta.getInstance().construirReporte(SincronizacionMMI.fechaReporte);
+      //HojaRuta.getInstance().construirReporte(SincronizacionMMI.fechaReporte);
     }
 
     fillProducts();

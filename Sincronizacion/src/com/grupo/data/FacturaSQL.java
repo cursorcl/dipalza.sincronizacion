@@ -1,6 +1,7 @@
 package com.grupo.data;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -104,10 +105,14 @@ public class FacturaSQL {
             this.con
                 .prepareStatement("insert into encabezadocumento (fecha, vence, afectoexento, rut, local, id, tipo, numero, codigo) values  (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-        Timestamp dFecha = new Timestamp(pEncabezado.getFecha().getTime());
-        Timestamp dVence = new Timestamp(addDay(pEncabezado).getTime());
-        pstmt.setTimestamp(1, dFecha);
-        pstmt.setTimestamp(2, dVence);
+//        Timestamp dFecha = new Timestamp(pEncabezado.getFecha().getTime());
+//        Timestamp dVence = new Timestamp(addDay(pEncabezado).getTime());
+        pstmt.setDate(1, new Date(pEncabezado.getFecha().getTime()));
+        pstmt.setDate(2, new Date(addDay(pEncabezado).getTime()));
+        
+//        pstmt.setTimestamp(1, dFecha);
+//        pstmt.setTimestamp(2, dVence);
+        
         pstmt.setString(3, "A");
         pstmt.setString(4, pEncabezado.getRut());
         pstmt.setString(5, "000");
@@ -159,6 +164,7 @@ public class FacturaSQL {
       pr = getDatosProducto(articulo);
 
       if (pr != null) {
+        String numeros = "";
         nombreProducto = pr.getNombre();
         int nVenta = (int) pVenta.getCantidad();
         int cantidadVenta = nVenta;
@@ -174,6 +180,7 @@ public class FacturaSQL {
         
         if (isNumerated) {
           
+          numeros = "";
           int m = 0;
           venta = 0.0f;
           int[] nV = new int[nVenta];
@@ -191,10 +198,12 @@ public class FacturaSQL {
               break;
             }
             n = r.getInt("numero");
-            nombreProducto = nombreProducto + "-" + n;
+            numeros = numeros + (numeros.isEmpty() ? "":"-") + n;
             venta += r.getFloat("peso");
             ventNeto = venta * pr.getPrecio();
             ventNeto *= (1.0F - pVenta.getDescuento() / 100.0F);
+            
+            //insert into registroNumerados values(articulo, 
             ++m;
             --nVenta;
           }
@@ -255,7 +264,11 @@ public class FacturaSQL {
           pstmt.setString(8, "06");
           pstmt.setString(9, "000");
           pstmt.setString(10, articulo);
-          pstmt.setString(11, nombreProducto);
+          if(!numeros.isEmpty())
+          {
+            nombreProducto = String.format("%s #[%s]", nombreProducto, numeros);
+          }
+          pstmt.setString(11, nombreProducto );
           pstmt.setFloat(12, -1.0F * pVenta.getDescuento());
           pstmt.executeUpdate();
           result.setTotal(ventNeto);
@@ -368,12 +381,14 @@ public class FacturaSQL {
       PreparedStatement pstmtIns =
           this.con
               .prepareStatement("insert into ctadocto (rut_cliente, fecha_vencimiento, comision, fecha_ingreso, vendedor, valor_bruto, valor_iva, valor_neto, tipo, numero, codigo_cliente, local_venta, valor_ila) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-      Timestamp dVencimiento = new Timestamp(addDay(e).getTime());
-      Timestamp dIngreso = new Timestamp(e.getFecha().getTime());
+//      Timestamp dVencimiento = new Timestamp(addDay(e).getTime());
+//      Timestamp dIngreso = new Timestamp(e.getFecha().getTime());
       pstmtIns.setString(1, e.getRut());
-      pstmtIns.setTimestamp(2, dVencimiento);
+//      pstmtIns.setTimestamp(2, dVencimiento);
+      pstmtIns.setDate(2, new Date(addDay(e).getTime()));
       pstmtIns.setFloat(3, comision);
-      pstmtIns.setTimestamp(4, dIngreso);
+      //pstmtIns.setTimestamp(4, dIngreso);
+      pstmtIns.setDate(4, new Date(e.getFecha().getTime()));
       pstmtIns.setString(5, e.getVendedor());
       pstmtIns.setFloat(6, bruto);
       pstmtIns.setFloat(7, iva);

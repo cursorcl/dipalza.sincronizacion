@@ -115,7 +115,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
     server.addNotificable(this);
     this.data = new ProcessorServer(new FechaFormateada(this.cmbFechaFacturacion.getDate()), server);
     this.data.addEventMsgListener(this);
-    HojaRuta.getInstance().addEventMsgListener(this);
+    //HojaRuta.getInstance().addEventMsgListener(this);
   }
 
   private void initialize() {
@@ -613,7 +613,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 
   public void reporte() {
     fechaReporte = calendar.getDate();
-    HojaRuta.getInstance().construirReporte(fechaReporte);
+    //HojaRuta.getInstance().construirReporte(fechaReporte);
   }
 
   public void creditos() {
