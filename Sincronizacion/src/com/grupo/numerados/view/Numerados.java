@@ -40,7 +40,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.TableColumn;
 
 import com.grupo.forms.SincronizacionMMI;
-import com.grupo.forms.report.HojaRuta;
+import com.grupo.forms.report.HojaRuta2003;
 import com.grupo.numerados.ProductosNumerados;
 import com.grupo.numerados.controller.ControladorNumerados;
 import com.grupo.util.UtilEvent;

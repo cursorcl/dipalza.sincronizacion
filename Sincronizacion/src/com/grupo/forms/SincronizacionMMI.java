@@ -52,7 +52,7 @@ import com.grupo.forms.actions.ActionCreditos;
 import com.grupo.forms.actions.ActionNumerados;
 import com.grupo.forms.actions.ActionReport;
 import com.grupo.forms.actions.ActionSalir;
-import com.grupo.forms.report.HojaRuta;
+import com.grupo.forms.report.HojaRuta2003;
 import com.grupo.forms.report.ListadoCreditos;
 import com.grupo.numerados.controller.ControladorNumerados;
 import com.grupo.numerados.view.DialogNumerados;
