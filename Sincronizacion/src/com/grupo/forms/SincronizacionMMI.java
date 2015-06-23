@@ -17,7 +17,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.EventObject;
 import java.util.Properties;
@@ -31,6 +30,7 @@ import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -52,7 +52,7 @@ import com.grupo.forms.actions.ActionCreditos;
 import com.grupo.forms.actions.ActionNumerados;
 import com.grupo.forms.actions.ActionReport;
 import com.grupo.forms.actions.ActionSalir;
-import com.grupo.forms.report.HojaRuta2003;
+import com.grupo.forms.report.HojaRutaExcel;
 import com.grupo.forms.report.ListadoCreditos;
 import com.grupo.numerados.controller.ControladorNumerados;
 import com.grupo.numerados.view.DialogNumerados;
@@ -100,7 +100,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
     initialize();
     Properties logProperties = new Properties();
     try {
-      logProperties.load(super.getClass().getResourceAsStream("/log.properties"));
+      logProperties.load(super.getClass().getResourceAsStream("/log4j.properties"));
       PropertyConfigurator.configure(logProperties);
     } catch (IOException e) {
       BasicConfigurator.configure();
@@ -613,6 +613,11 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 
   public void reporte() {
     fechaReporte = calendar.getDate();
+    try {
+      HojaRutaExcel.getInstance().generarReport(fechaReporte);
+    } catch (Exception e) {
+      JOptionPane.showMessageDialog(this,"No se puede costruir reporte para la fecha solicitada.", "Error de reporte.", JOptionPane.ERROR_MESSAGE);
+    }
     //HojaRuta.getInstance().construirReporte(fechaReporte);
   }
 
