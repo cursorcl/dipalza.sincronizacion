@@ -39,13 +39,13 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.TableColumn;
 
-import com.grupo.forms.SincronizacionMMI;
 import com.grupo.numerados.ProductosNumerados;
 import com.grupo.numerados.controller.ControladorNumerados;
 import com.grupo.util.UtilEvent;
 
 public class Numerados extends JPanel implements ActionListener, FocusListener {
 
+  private static final long serialVersionUID = 1L;
   public static final String DELETE = "DELETE";
   public static final String ADD = "ADD";
   public static final String RESET = "RESET";
@@ -395,7 +395,7 @@ public class Numerados extends JPanel implements ActionListener, FocusListener {
       btnPrint.setFocusable(false);
       btnPrint.setActionCommand("PRINT");
       btnPrint.addActionListener(this);
-      btnPrint.setIcon(new ImageIcon(Numerados.class.getResource("/imagenes/_16/printer.png")));
+      btnPrint.setIcon(new ImageIcon(Numerados.class.getResource("/imagenes/printer.png")));
       btnPrint.setToolTipText("Imprimir reporte de carga.");
     }
     return btnPrint;

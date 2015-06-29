@@ -6,7 +6,8 @@
  
  public class FacturasModel extends AbstractTableModel
  {
-   private final int COLUMN_COUNT = 6;
+  private static final long serialVersionUID = 7126031323775244990L;
+
  
    private Vector<FacturaItemModel> data = null;
  
@@ -15,7 +16,7 @@
  
    public FacturasModel()
    {
-     this.data = new Vector();
+     this.data = new Vector<FacturaItemModel>();
      this.df = ((DecimalFormat)DecimalFormat.getCurrencyInstance());
    }
  

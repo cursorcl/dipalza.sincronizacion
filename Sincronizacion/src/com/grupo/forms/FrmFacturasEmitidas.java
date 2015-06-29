@@ -1,27 +1,28 @@
  package com.grupo.forms;
  
  import java.awt.BorderLayout;
- import java.awt.Color;
- import java.awt.Dimension;
- import java.awt.Font;
- import java.awt.GridBagConstraints;
- import java.awt.GridBagLayout;
- import java.awt.Insets;
- import java.awt.SystemColor;
- import java.awt.event.ActionEvent;
- import java.awt.event.ActionListener;
- import java.text.DecimalFormat;
- import javax.swing.BorderFactory;
- import javax.swing.DefaultListModel;
- import javax.swing.JButton;
- import javax.swing.JFrame;
- import javax.swing.JLabel;
- import javax.swing.JList;
- import javax.swing.JOptionPane;
- import javax.swing.JPanel;
- import javax.swing.JScrollPane;
- import javax.swing.JTable;
- import javax.swing.table.TableColumn;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.TableColumn;
  
  public class FrmFacturasEmitidas extends JFrame
  {
@@ -47,7 +48,8 @@
    private float neto = 0.0F;
    private float iva;
    private JButton btnOK = null;
-   private JList lstMalos = null;
+   private JList<String> lstMalos = null;
+   private DefaultListModel<String> malosModel;
    private JLabel jLabel2 = null;
    private JLabel lblTitle = null;
    private JScrollPane jScroll;
@@ -328,7 +330,8 @@
    }
  
    public void addItemFallido(String item) {
-     ((DefaultListModel)lstMalos.getModel()).addElement(item);
+     
+     malosModel.addElement(item);
    }
  
    public void setVendedor(String vendedor) {
@@ -384,11 +387,12 @@
      return btnOK;
    }
  
-   private JList getLstMalos()
+   private JList<String> getLstMalos()
    {
      if (lstMalos == null) {
-       lstMalos = new JList();
-       lstMalos.setModel(new DefaultListModel());
+       lstMalos = new JList<String>();
+       malosModel = new DefaultListModel<String>();
+       lstMalos.setModel(malosModel);
        lstMalos.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
      }
      return lstMalos;

@@ -34,7 +34,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
+import javax.swing.SwingUtilities;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
@@ -47,13 +47,7 @@ import com.grupo.biblioteca.server.ConnectionServer;
 import com.grupo.biblioteca.server.events.ConnectionServerEvent;
 import com.grupo.biblioteca.server.events.Notificable;
 import com.grupo.data.ProcessorServer;
-import com.grupo.forms.actions.ActionClone;
-import com.grupo.forms.actions.ActionCreditos;
-import com.grupo.forms.actions.ActionNumerados;
-import com.grupo.forms.actions.ActionReport;
-import com.grupo.forms.actions.ActionSalir;
 import com.grupo.forms.report.HojaRutaExcel;
-import com.grupo.forms.report.ListadoCreditos;
 import com.grupo.numerados.controller.ControladorNumerados;
 import com.grupo.numerados.view.DialogNumerados;
 import com.grupo.util.EventMsg;
@@ -66,37 +60,33 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 
   private JPanel jPanel = null;
   private JPanel jPanel2 = null;
-  private JLabel jLabel = null;
-  private JButton jButton2 = null;
   private JPanel jPanel3 = null;
-  private JButton btnNumerados = null;
   private ProcessorServer data = null;
-  private JList lstMessages = null;
+  private JList<String> lstMessages = null;
 
-  private DefaultListModel model = new DefaultListModel();
-  private JButton btnReport = null;
-  private JButton btnClone = null;
-  private JCalendarCombo calendar = null;
+  private DefaultListModel<String> model = new DefaultListModel<String>();
   private DlgClonarFactura dlg = null;
   private JButton btnClear = null;
   private JScrollPane jScrollPane = null;
   private JCalendarCombo cmbFechaFacturacion = null;
   private JLabel lblFecha = null;
-  private JButton btnRepCreditos = null;
   private JMenuBar mnuSistema = null;
   private JMenu mnuPPal = null;
   private JMenuItem mnuReporte = null;
-  private JMenuItem mnuCreditos = null;
+//  private JMenuItem mnuCreditos = null;
   private JMenuItem mnuNumerados = null;
   private JMenuItem mnuClonar = null;
   private JMenuItem mnuSalir = null;
   private JSeparator jSeparator = null;
-  private JPanel jPanel4 = null;
 
   public static Date fechaFacturacion = new Date(System.currentTimeMillis());
   public static Date fechaReporte = new Date(System.currentTimeMillis());
 
+  private DlgFecha dlgFecha = new DlgFecha();
+
   public SincronizacionMMI() {
+    setAlwaysOnTop(true);
+    setTitle("VENTAS DIPALZA");
     initialize();
     Properties logProperties = new Properties();
     try {
@@ -113,9 +103,10 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
     });
     ConnectionServer server = new ConnectionServer();
     server.addNotificable(this);
-    this.data = new ProcessorServer(new FechaFormateada(this.cmbFechaFacturacion.getDate()), server);
+    this.data =
+        new ProcessorServer(new FechaFormateada(this.cmbFechaFacturacion.getDate()), server);
     this.data.addEventMsgListener(this);
-    //HojaRuta.getInstance().addEventMsgListener(this);
+    // HojaRuta.getInstance().addEventMsgListener(this);
   }
 
   private void initialize() {
@@ -130,24 +121,14 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
     if (this.jPanel == null) {
       this.jPanel = new JPanel();
       this.jPanel.setLayout(new BorderLayout());
-      this.jPanel.add(getJPanel2(), "Center");
-      this.jPanel.add(getJPanel3(), "South");
+      this.jPanel.add(getJPanel2(), BorderLayout.NORTH);
+      this.jPanel.add(getJPanel3(), BorderLayout.CENTER);
     }
     return this.jPanel;
   }
 
   private JPanel getJPanel2() {
     if (this.jPanel2 == null) {
-      GridBagConstraints gridBagConstraints62 = new GridBagConstraints();
-      gridBagConstraints62.insets = new Insets(0, 0, 0, 5);
-      gridBagConstraints62.gridx = 2;
-      gridBagConstraints62.gridy = 3;
-      GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
-      gridBagConstraints51.anchor = 13;
-      gridBagConstraints51.insets = new Insets(2, 3, 5, 5);
-      gridBagConstraints51.gridx = 2;
-      gridBagConstraints51.gridy = 1;
-      gridBagConstraints51.fill = GridBagConstraints.HORIZONTAL;
       GridBagConstraints gridBagConstraints41 = new GridBagConstraints();
       gridBagConstraints41.anchor = GridBagConstraints.CENTER;
       gridBagConstraints41.insets = new Insets(3, 3, 0, 5);
@@ -157,23 +138,6 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
       gridBagConstraints41.gridy = 1;
       gridBagConstraints41.weightx = 1.0D;
       gridBagConstraints41.fill = GridBagConstraints.NONE;
-      GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
-      gridBagConstraints31.insets = new Insets(0, 0, 0, 5);
-      gridBagConstraints31.gridx = 1;
-      gridBagConstraints31.gridheight = 2;
-      gridBagConstraints31.fill = GridBagConstraints.HORIZONTAL;
-      gridBagConstraints31.gridy = 2;
-      GridBagConstraints gridBagConstraints121 = new GridBagConstraints();
-      gridBagConstraints121.anchor = GridBagConstraints.EAST;
-      gridBagConstraints121.insets = new Insets(2, 3, 5, 3);
-      gridBagConstraints121.gridx = 6;
-      gridBagConstraints121.gridy = 1;
-      gridBagConstraints121.fill = GridBagConstraints.NONE;
-      GridBagConstraints gridBagConstraints71 = new GridBagConstraints();
-      gridBagConstraints71.gridx = 5;
-      gridBagConstraints71.fill = GridBagConstraints.NONE;
-      gridBagConstraints71.insets = new Insets(3, 3, 5, 5);
-      gridBagConstraints71.gridy = 0;
       GridBagConstraints gridBagConstraints61 = new GridBagConstraints();
       gridBagConstraints61.gridx = 0;
       gridBagConstraints61.fill = GridBagConstraints.HORIZONTAL;
@@ -186,16 +150,6 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
       gridBagConstraints13.fill = 2;
       gridBagConstraints13.insets = new Insets(5, 0, 0, 0);
       gridBagConstraints13.gridy = 0;
-      this.lblFecha = new JLabel();
-      this.lblFecha.setText("Fecha Facturación");
-      GridBagConstraints gridBagConstraints = new GridBagConstraints();
-      gridBagConstraints.fill = GridBagConstraints.VERTICAL;
-      gridBagConstraints.gridy = 0;
-      gridBagConstraints.weightx = 1.0D;
-      gridBagConstraints.gridwidth = 1;
-      gridBagConstraints.anchor = GridBagConstraints.CENTER;
-      gridBagConstraints.insets = new Insets(3, 10, 5, 0);
-      gridBagConstraints.gridx = 6;
       GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
       gridBagConstraints6.gridx = 6;
       gridBagConstraints6.ipadx = 4;
@@ -221,49 +175,33 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
       gridBagConstraints4.fill = 1;
       gridBagConstraints4.gridx = 1;
       this.jPanel2 = new JPanel();
-      this.jPanel2.setLayout(new GridBagLayout());
+      GridBagLayout gbl_jPanel2 = new GridBagLayout();
+      gbl_jPanel2.columnWeights = new double[]{1.0, 0.0, 1.0};
+      gbl_jPanel2.columnWidths = new int[]{0, 100, 0};
+      this.jPanel2.setLayout(gbl_jPanel2);
       this.jPanel2.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
-      this.jPanel2.setMinimumSize(new Dimension(577, 220));
-      this.jPanel2.setMaximumSize(new Dimension(577, 220));
-      this.jPanel2.setPreferredSize(new Dimension(577, 120));
-      jPanel2.add(getCmbFechaFacturacion(), gridBagConstraints);
+      this.jPanel2.setMinimumSize(new Dimension(577, 75));
+      this.jPanel2.setMaximumSize(new Dimension(577, 75));
+      this.jPanel2.setPreferredSize(new Dimension(577, 75));
+      GridBagConstraints gridBagConstraints71 = new GridBagConstraints();
+      gridBagConstraints71.gridx = 1;
+      gridBagConstraints71.fill = GridBagConstraints.NONE;
+      gridBagConstraints71.insets = new Insets(3, 3, 5, 5);
+      gridBagConstraints71.gridy = 0;
+      this.lblFecha = new JLabel();
+      this.lblFecha.setText("Fecha Facturación");
       jPanel2.add(lblFecha, gridBagConstraints71);
-      jPanel2.add(getBtnNumerados(), gridBagConstraints121);
-      GridBagConstraints gridBagConstraints131 = new GridBagConstraints();
-      gridBagConstraints131.fill = GridBagConstraints.NONE;
-      gridBagConstraints131.gridx = 6;
-      gridBagConstraints131.gridy = 2;
-      gridBagConstraints131.anchor = GridBagConstraints.EAST;
-      gridBagConstraints131.insets = new Insets(2, 3, 5, 3);
-      jPanel2.add(getBtnClone(), gridBagConstraints131);
-      jPanel2.add(getJPanel4(), gridBagConstraints31);
-      jPanel2.add(getCalendar(), gridBagConstraints41);
-      jPanel2.add(getBtnReport(), gridBagConstraints51);
-      jPanel2.add(getBtnRepCreditos(), gridBagConstraints62);
-      GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
-      gridBagConstraints14.anchor = GridBagConstraints.EAST;
-      gridBagConstraints14.insets = new Insets(2, 3, 0, 3);
-      gridBagConstraints14.gridwidth = 1;
-      gridBagConstraints14.gridx = 6;
-      gridBagConstraints14.gridy = 3;
-      gridBagConstraints14.ipadx = 0;
-      gridBagConstraints14.fill = GridBagConstraints.NONE;
-      jPanel2.add(getJButton2(), gridBagConstraints14);
+      GridBagConstraints gridBagConstraints = new GridBagConstraints();
+      gridBagConstraints.fill = GridBagConstraints.BOTH;
+      gridBagConstraints.gridy = 1;
+      gridBagConstraints.weightx = 1.0D;
+      gridBagConstraints.gridwidth = 1;
+      gridBagConstraints.anchor = GridBagConstraints.CENTER;
+      gridBagConstraints.insets = new Insets(3, 10, 0, 5);
+      gridBagConstraints.gridx = 1;
+      jPanel2.add(getCmbFechaFacturacion(), gridBagConstraints);
     }
     return this.jPanel2;
-  }
-
-  private JButton getJButton2() {
-    if (this.jButton2 == null) {
-      this.jButton2 = new JButton();
-      jButton2.setAction(new ActionSalir(this));
-      this.jButton2.setText("Salir");
-      this.jButton2.setPreferredSize(new Dimension(100, 26));
-      this.jButton2.setMinimumSize(new Dimension(100, 26));
-      this.jButton2.setFont(new Font("Dialog", 1, 10));
-      this.jButton2.setMaximumSize(new Dimension(100, 26));
-    }
-    return this.jButton2;
   }
 
   private JPanel getJPanel3() {
@@ -295,76 +233,11 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
     return this.jPanel3;
   }
 
-  private JButton getBtnNumerados() {
-    if (this.btnNumerados == null) {
-      this.btnNumerados = new JButton();
-      btnNumerados.setAction(new ActionNumerados(this));
-      this.btnNumerados.setText("Numerados");
-      this.btnNumerados.setPreferredSize(new Dimension(100, 26));
-      this.btnNumerados.setMinimumSize(new Dimension(100, 26));
-      this.btnNumerados.setFont(new Font("Dialog", 1, 10));
-      this.btnNumerados.setMaximumSize(new Dimension(100, 26));
-    }
-    return this.btnNumerados;
-  }
-
-  private JList getLstMessages() {
+  private JList<String> getLstMessages() {
     if (this.lstMessages == null) {
-      this.lstMessages = new JList(this.model);
+      this.lstMessages = new JList<String>(this.model);
     }
     return this.lstMessages;
-  }
-
-  private JButton getBtnReport() {
-    if (this.btnReport == null) {
-      this.btnReport = new JButton();
-      btnReport.setAction(new ActionReport(this));
-      this.btnReport.setPreferredSize(new Dimension(100, 26));
-      this.btnReport.setMinimumSize(new Dimension(100, 26));
-      this.btnReport.setMaximumSize(new Dimension(100, 26));
-      this.btnReport.setFont(new Font("Dialog", 1, 10));
-      this.btnReport.setText("Reporte");
-    }
-
-    return this.btnReport;
-  }
-
-  private JButton getBtnClone() {
-    if (this.btnClone == null) {
-      this.btnClone = new JButton();
-      btnClone.setAction(new ActionClone(this));
-      this.btnClone.setText("Clonar");
-      this.btnClone.setMinimumSize(new Dimension(100, 26));
-      this.btnClone.setMaximumSize(new Dimension(100, 26));
-      this.btnClone.setFont(new Font("Dialog", 1, 10));
-      this.btnClone.setPreferredSize(new Dimension(100, 26));
-    }
-
-    return this.btnClone;
-  }
-
-  private JCalendarCombo getCalendar() {
-    if (this.calendar == null) {
-      BasicComboBoxRenderer.UIResource UIResource = new BasicComboBoxRenderer.UIResource();
-      UIResource.setFont(new Font("Dialog", 1, 8));
-      UIResource.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
-      UIResource.setIconTextGap(2);
-      this.calendar = new JCalendarCombo();
-      this.calendar.setFont(new Font("Dialog", 1, 10));
-      this.calendar.setMaximumRowCount(4);
-      this.calendar.setMinimumSize(new Dimension(161, 23));
-      this.calendar.setMaximumSize(new Dimension(161, 23));
-      this.calendar.setPreferredSize(new Dimension(161, 23));
-      this.calendar.setRenderer(UIResource);
-      calendar.addActionListener(new ActionListener() {
-
-        public void actionPerformed(ActionEvent e) {
-          fechaReporte = calendar.getDate();
-        }
-      });
-      fechaReporte = calendar.getDate();
-    }
-    return this.calendar;
   }
 
   private JButton getBtnClear() {
@@ -409,24 +282,6 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
   }
 
   /**
-   * This method initializes btnRepCreditos
-   * 
-   * @return javax.swing.JButton
-   */
-  private JButton getBtnRepCreditos() {
-    if (btnRepCreditos == null) {
-      btnRepCreditos = new JButton();
-      btnRepCreditos.setAction(new ActionCreditos(this));
-      btnRepCreditos.setFont(new Font("Dialog", 1, 10));
-      btnRepCreditos.setMinimumSize(new Dimension(100, 26));
-      btnRepCreditos.setPreferredSize(new Dimension(100, 26));
-      btnRepCreditos.setText("Créditos");
-      btnRepCreditos.setMaximumSize(new Dimension(100, 26));
-    }
-    return btnRepCreditos;
-  }
-
-  /**
    * This method initializes mnuSistema
    * 
    * @return javax.swing.JMenuBar
@@ -448,9 +303,9 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
   private JMenu getMnuPPal() {
     if (mnuPPal == null) {
       mnuPPal = new JMenu();
-      mnuPPal.setText("Opciones");
+      mnuPPal.setText("Operaciones");
       mnuPPal.add(getMnuReporte());
-      mnuPPal.add(getMnuCreditos());
+      //mnuPPal.add(getMnuCreditos());
       mnuPPal.add(getMnuNumerados());
       mnuPPal.add(getMnuClonar());
       mnuPPal.add(getJSeparator());
@@ -467,8 +322,14 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
   private JMenuItem getMnuReporte() {
     if (mnuReporte == null) {
       mnuReporte = new JMenuItem();
-      mnuReporte.setAction(new ActionReport(this));
-      mnuReporte.setText("Reporte");
+      mnuReporte.setText("Reporte Ruta");
+      mnuReporte.addActionListener(new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          reporte();
+        }
+      });
     }
     return mnuReporte;
   }
@@ -478,14 +339,20 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
    * 
    * @return javax.swing.JMenuItem
    */
-  private JMenuItem getMnuCreditos() {
-    if (mnuCreditos == null) {
-      mnuCreditos = new JMenuItem();
-      mnuCreditos.setAction(new ActionCreditos(this));
-      mnuCreditos.setText("Créditos");
-    }
-    return mnuCreditos;
-  }
+//  private JMenuItem getMnuCreditos() {
+//    if (mnuCreditos == null) {
+//      mnuCreditos = new JMenuItem();
+//      mnuCreditos.setText("Créditos");
+//      mnuCreditos.addActionListener(new ActionListener() {
+//
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//          creditos();
+//        }
+//      });
+//    }
+//    return mnuCreditos;
+//  }
 
   /**
    * This method initializes mnuNumerados
@@ -495,8 +362,14 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
   private JMenuItem getMnuNumerados() {
     if (mnuNumerados == null) {
       mnuNumerados = new JMenuItem();
-      mnuNumerados.setAction(new ActionNumerados(this));
-      mnuNumerados.setText("Numerados");
+      mnuNumerados.setText("Agregar Numerados");
+      mnuNumerados.addActionListener(new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          numerados();
+        }
+      });
     }
     return mnuNumerados;
   }
@@ -509,8 +382,14 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
   private JMenuItem getMnuClonar() {
     if (mnuClonar == null) {
       mnuClonar = new JMenuItem();
-      mnuClonar.setAction(new ActionClone(this));
-      mnuClonar.setText("Clonar");
+      mnuClonar.setText("Clonar Factura");
+      mnuClonar.addActionListener(new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          clonarFactura();
+        }
+      });
     }
     return mnuClonar;
   }
@@ -523,8 +402,14 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
   private JMenuItem getMnuSalir() {
     if (mnuSalir == null) {
       mnuSalir = new JMenuItem();
-      mnuSalir.setAction(new ActionSalir(this));
-      mnuSalir.setText("Salir");
+      mnuSalir.setText("Salir del Sistema");
+      mnuSalir.addActionListener(new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          salir();
+        }
+      });
     }
     return mnuSalir;
   }
@@ -541,30 +426,24 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
     return jSeparator;
   }
 
-  /**
-   * This method initializes jPanel4
-   * 
-   * @return javax.swing.JPanel
-   */
-  private JPanel getJPanel4() {
-    if (jPanel4 == null) {
-      jPanel4 = new JPanel();
-      jPanel4.setLayout(new GridBagLayout());
-      jPanel4.setPreferredSize(new Dimension(150, 60));
-    }
-    return jPanel4;
-  }
-
   public static void main(String[] args) {
     JFrame frame = new SincronizacionMMI();
-    frame.setDefaultCloseOperation(3);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setVisible(true);
   }
 
-  public void onMessage(EventMsg evt) {
+  public void onMessage(final EventMsg evt) {
     if (evt != null) {
-      this.model.addElement(evt.getMessage());
-      this.lstMessages.repaint();
+      Runnable r =  new Runnable()
+      {
+
+        @Override
+        public void run() {
+          model.addElement(evt.getMessage());
+          lstMessages.repaint();
+        }
+      };
+      SwingUtilities.invokeLater(r);
     }
   }
 
@@ -591,12 +470,11 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
     setBounds(topX, topY, getWidth(), getHeight());
   }
 
-  public void colne() {
+  public void clonarFactura() {
     if (SincronizacionMMI.this.dlg == null) {
       dlg = new DlgClonarFactura(SincronizacionMMI.this);
     }
     dlg.clear();
-
     int topX = getLocation().x + getWidth() / 2 - dlg.getWidth() / 2;
     int topY = getLocation().y + getHeight() / 2 - dlg.getHeight() / 2;
     dlg.setLocation(topX, topY);
@@ -612,17 +490,27 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
   }
 
   public void reporte() {
-    fechaReporte = calendar.getDate();
-    try {
-      HojaRutaExcel.getInstance().generarReport(fechaReporte);
-    } catch (Exception e) {
-      JOptionPane.showMessageDialog(this,"No se puede costruir reporte para la fecha solicitada.", "Error de reporte.", JOptionPane.ERROR_MESSAGE);
+    dlgFecha.setLocation(getLocationOnScreen());
+    dlgFecha.setVisible(true);
+    fechaReporte = dlgFecha.getDate();
+    if (fechaReporte != null) {
+      try {
+        HojaRutaExcel.getInstance().generarReporte(fechaReporte, this);
+      } catch (Exception e) {
+        JOptionPane.showMessageDialog(this,
+            "No se puede costruir reporte para la fecha solicitada.", "Error de reporte.",
+            JOptionPane.ERROR_MESSAGE);
+      }
     }
-    //HojaRuta.getInstance().construirReporte(fechaReporte);
   }
 
   public void creditos() {
-    ListadoCreditos.getInstance().construirReporte(getCalendar().getCalendar());
+    dlgFecha.setLocation(getLocationOnScreen());
+    dlgFecha.setVisible(true);
+    Date fecha = dlgFecha.getDate();
+    if (fecha != null) {
+      //ListadoCreditos.getInstance().construirReporte(fecha);
+    }
   }
 
   public void salir() {
@@ -633,11 +521,11 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
   }
 
   public void handle(EventObject paramEventObject) {
-    if(paramEventObject instanceof ConnectionServerEvent)
-    {
-      ConnectionServerEvent event =  (ConnectionServerEvent)paramEventObject;
+    if (paramEventObject instanceof ConnectionServerEvent) {
+      ConnectionServerEvent event = (ConnectionServerEvent) paramEventObject;
       InetAddress thisIp = event.getServer().getInetAddress();
-      String ipAddress = String.format("%s:%d", thisIp.toString(), event.getServer().getLocalPort());
+      String ipAddress =
+          String.format("%s:%d", thisIp.toString(), event.getServer().getLocalPort());
       setTitle("Ventas " + ipAddress);
     }
   }

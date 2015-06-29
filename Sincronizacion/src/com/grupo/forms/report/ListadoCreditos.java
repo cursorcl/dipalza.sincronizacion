@@ -1,25 +1,6 @@
 package com.grupo.forms.report;
 
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Vector;
-
-import javax.swing.JFrame;
-
-import com.grupo.data.DataBaseConnection;
-
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.view.JRViewer;
 
 public class ListadoCreditos {
 
@@ -33,14 +14,15 @@ public class ListadoCreditos {
 		return instance;
 	}
 
-	public void construirReporte(Calendar fecha) {
+	/*
+	public void construirReporte(Date fecha) {
 		Connection con = DataBaseConnection.getInstance().getConnectionDB();
 		PreparedStatement pstmt;
 		collection.clear();
 		try {
 			pstmt = con.prepareStatement("SELECT MSOCLIENTES.Ruta, MSOCLIENTES.Vendedor, MSOCLIENTES.Rut, MSOCLIENTES.Razon, ENCABEZADOCUMENTO.Numero, TOTALDOCUMENTO.Total, ENCABEZADOCUMENTO.Fecha FROM MSOCLIENTES INNER JOIN (ENCABEZADOCUMENTO INNER JOIN TOTALDOCUMENTO ON ENCABEZADOCUMENTO.Id = TOTALDOCUMENTO.Id) ON MSOCLIENTES.Rut = ENCABEZADOCUMENTO.Rut WHERE [Vence]-[Fecha] > 0 AND ENCABEZADOCUMENTO.Fecha = ? ORDER BY MSOCLIENTES.Ruta, MSOCLIENTES.Vendedor");
 			pstmt.clearParameters();
-			pstmt.setDate(1, new java.sql.Date(fecha.getTime().getTime()));
+			pstmt.setDate(1, new java.sql.Date(fecha.getTime()));
 			ResultSet res = pstmt.executeQuery();
 			while(res.next()) {
 				RegistroVentaCredito r = new RegistroVentaCredito();
@@ -81,7 +63,7 @@ public class ListadoCreditos {
 		pnlReporte.setContentPane(report);
 		pnlReporte.setVisible(true);
 	}
-
+  */
 	public static java.util.Collection<RegistroVentaCredito> generateCollection() {
 		return collection;
 	}
