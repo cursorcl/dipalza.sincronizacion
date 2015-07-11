@@ -1,6 +1,5 @@
 package com.grupo.data;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,15 +9,17 @@ import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
+
+import com.grupo.forms.SincronizacionMMI;
+
 public class DataBaseConnection {
+
   private static DataBaseConnection instance = null;
-
   private boolean bConnectOk = false;
-
   private Connection connectionDB = null;
 
   private DataBaseConnection() {
-    OpenConnectionDB();
+    openConnection();
   }
 
   public static DataBaseConnection getInstance() {
@@ -28,7 +29,7 @@ public class DataBaseConnection {
     return instance;
   }
 
-  public boolean OpenConnectionDB() {
+  public boolean openConnection() {
     String host = "localhost";
     int port = 1433;
     String baseDatos = "mastersoft";
@@ -36,19 +37,14 @@ public class DataBaseConnection {
     String user = "cursor";
     String password = "_l2j1rs2";
     try {
-      InputStream inStream = DataBaseConnection.class.getResourceAsStream("/sqlserver.properties");
-      if (inStream != null) {
-        Properties props = new Properties();
-        props.load(inStream);
+      if (SincronizacionMMI.PROPERTIES != null) {
+        Properties props = SincronizacionMMI.PROPERTIES;
         host = props.getProperty("host", "localhost");
         instanceName = props.getProperty("instance", "sqlexpress");
         port = Integer.parseInt(props.getProperty("port", "1433"));
         baseDatos = props.getProperty("basedatos", "mastersoft");
-
         user = props.getProperty("user", "cursor");
         password = props.getProperty("password", "_l2j1rs2");
-
-        inStream.close();
         props = null;
       }
 

@@ -15,7 +15,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.Date;
 import java.util.EventObject;
@@ -42,6 +45,8 @@ import org.apache.log4j.PropertyConfigurator;
 import org.freixas.jcalendar.DateEvent;
 import org.freixas.jcalendar.DateListener;
 import org.freixas.jcalendar.JCalendarCombo;
+
+import cl.eos.util.Utils;
 
 import com.grupo.biblioteca.server.ConnectionServer;
 import com.grupo.biblioteca.server.events.ConnectionServerEvent;
@@ -73,7 +78,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
   private JMenuBar mnuSistema = null;
   private JMenu mnuPPal = null;
   private JMenuItem mnuReporte = null;
-//  private JMenuItem mnuCreditos = null;
+  // private JMenuItem mnuCreditos = null;
   private JMenuItem mnuNumerados = null;
   private JMenuItem mnuClonar = null;
   private JMenuItem mnuSalir = null;
@@ -82,8 +87,10 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
   public static Date fechaFacturacion = new Date(System.currentTimeMillis());
   public static Date fechaReporte = new Date(System.currentTimeMillis());
 
-  private DlgFecha dlgFecha = new DlgFecha();
+  public static Properties PROPERTIES;
 
+  private DlgFecha dlgFecha = new DlgFecha();
+  private Logger log = Logger.getLogger(SincronizacionMMI.class);
   public SincronizacionMMI() {
     setAlwaysOnTop(true);
     setTitle("VENTAS DIPALZA");
@@ -92,16 +99,32 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
     try {
       logProperties.load(super.getClass().getResourceAsStream("/log4j.properties"));
       PropertyConfigurator.configure(logProperties);
+
+
+      PROPERTIES = new Properties();
+      log.debug(Utils.getDefaultDirectory()  + "/sqlserver.properties");
+      File fProp =  new File(Utils.getDefaultDirectory()  + "/sqlserver.properties");
+      if (fProp.exists()) {
+        log.debug("Archivo de propiedades encontrado correctamente");
+        PROPERTIES.load(new FileReader(fProp));
+      }
+      else
+      {
+        log.debug("Archivo de propiedades NO encontrado");
+      }
+      
+
     } catch (IOException e) {
       BasicConfigurator.configure();
     }
+
 
     addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent e) {
         System.exit(0);
       }
     });
-    ConnectionServer server = new ConnectionServer();
+    ConnectionServer server = new ConnectionServer(PROPERTIES);
     server.addNotificable(this);
     this.data =
         new ProcessorServer(new FechaFormateada(this.cmbFechaFacturacion.getDate()), server);
@@ -176,8 +199,8 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
       gridBagConstraints4.gridx = 1;
       this.jPanel2 = new JPanel();
       GridBagLayout gbl_jPanel2 = new GridBagLayout();
-      gbl_jPanel2.columnWeights = new double[]{1.0, 0.0, 1.0};
-      gbl_jPanel2.columnWidths = new int[]{0, 100, 0};
+      gbl_jPanel2.columnWeights = new double[] {1.0, 0.0, 1.0};
+      gbl_jPanel2.columnWidths = new int[] {0, 100, 0};
       this.jPanel2.setLayout(gbl_jPanel2);
       this.jPanel2.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
       this.jPanel2.setMinimumSize(new Dimension(577, 75));
@@ -305,7 +328,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
       mnuPPal = new JMenu();
       mnuPPal.setText("Operaciones");
       mnuPPal.add(getMnuReporte());
-      //mnuPPal.add(getMnuCreditos());
+      // mnuPPal.add(getMnuCreditos());
       mnuPPal.add(getMnuNumerados());
       mnuPPal.add(getMnuClonar());
       mnuPPal.add(getJSeparator());
@@ -339,20 +362,20 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
    * 
    * @return javax.swing.JMenuItem
    */
-//  private JMenuItem getMnuCreditos() {
-//    if (mnuCreditos == null) {
-//      mnuCreditos = new JMenuItem();
-//      mnuCreditos.setText("Créditos");
-//      mnuCreditos.addActionListener(new ActionListener() {
-//
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//          creditos();
-//        }
-//      });
-//    }
-//    return mnuCreditos;
-//  }
+  // private JMenuItem getMnuCreditos() {
+  // if (mnuCreditos == null) {
+  // mnuCreditos = new JMenuItem();
+  // mnuCreditos.setText("Créditos");
+  // mnuCreditos.addActionListener(new ActionListener() {
+  //
+  // @Override
+  // public void actionPerformed(ActionEvent e) {
+  // creditos();
+  // }
+  // });
+  // }
+  // return mnuCreditos;
+  // }
 
   /**
    * This method initializes mnuNumerados
@@ -434,8 +457,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 
   public void onMessage(final EventMsg evt) {
     if (evt != null) {
-      Runnable r =  new Runnable()
-      {
+      Runnable r = new Runnable() {
 
         @Override
         public void run() {
@@ -509,7 +531,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
     dlgFecha.setVisible(true);
     Date fecha = dlgFecha.getDate();
     if (fecha != null) {
-      //ListadoCreditos.getInstance().construirReporte(fecha);
+      // ListadoCreditos.getInstance().construirReporte(fecha);
     }
   }
 
