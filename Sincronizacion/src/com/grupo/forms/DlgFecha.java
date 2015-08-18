@@ -51,7 +51,7 @@ public class DlgFecha extends JDialog {
     setPreferredSize(new Dimension(350, 280));
     setAlwaysOnTop(true);
     setModal(true);
-    setType(Type.POPUP);
+//    setType(Type.POPUP);
     setTitle("Seleccione Fecha");
     setBounds(100, 100, 320, 230);
     getContentPane().setLayout(new MigLayout("", "[32.00,grow]", "[149.00,grow,top][]"));

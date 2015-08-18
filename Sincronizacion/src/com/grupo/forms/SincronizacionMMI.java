@@ -102,15 +102,15 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 
 
       PROPERTIES = new Properties();
-      log.debug(Utils.getDefaultDirectory()  + "/sqlserver.properties");
-      File fProp =  new File(Utils.getDefaultDirectory()  + "/sqlserver.properties");
+      log.debug(Utils.getDefaultDirectory()  + "\\sqlserver.properties");
+      File fProp =  new File(Utils.getDefaultDirectory()  + "\\sqlserver.properties");
       if (fProp.exists()) {
         log.debug("Archivo de propiedades encontrado correctamente");
         PROPERTIES.load(new FileReader(fProp));
       }
       else
       {
-        log.debug("Archivo de propiedades NO encontrado");
+        log.debug("Archivo de propiedades NO encontrado:" + fProp.getAbsolutePath());
       }
       
 

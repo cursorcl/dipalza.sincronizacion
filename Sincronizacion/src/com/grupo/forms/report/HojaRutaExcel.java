@@ -52,7 +52,7 @@ public class HojaRutaExcel extends EventEmisor {
 
     @Override
     public String toString() {
-      return "OTRegistro [ruta=" + ruta + ", articulo=" + articulo + ", cantidad=" + cantidad
+      return "[ruta=" + ruta + ", articulo=" + articulo + ", cantidad=" + cantidad
           + ", totalLinea=" + totalLinea + "]";
     }
   }
@@ -64,7 +64,7 @@ public class HojaRutaExcel extends EventEmisor {
   private String query =
       "SELECT M.Ruta as ruta, D.Articulo as articulo, D.descripcion, D.Cantidad AS cantidad, D.TotalLinea AS totalLinea "
           + "FROM ENCABEZADOCUMENTO AS E, DETALLEDOCUMENTO AS D, MSOCLIENTES AS M "
-          + "WHERE E.Id=D.Id AND  E.Rut = M.Rut AND D.Articulo in ( select articulo from numerados) and  E.Fecha = ?  "
+          + "WHERE E.Id=D.Id AND  E.Rut = M.Rut AND E.codigo = M.codigo and E.tipo = '06' and E.vigente  = 1 AND D.Articulo in ( select articulo from articulosnumerados) and  E.Fecha = ?  "
           + "ORDER BY M.Ruta, D.Articulo";
 
 
@@ -180,6 +180,7 @@ public class HojaRutaExcel extends EventEmisor {
 
   private Workbook elaborarReporte(Date fecha) throws InvalidFormatException, IOException {
     
+
     notificar("Elaborando el reporte.");
     String articulo = "";
     String ruta = "";
@@ -217,6 +218,7 @@ public class HojaRutaExcel extends EventEmisor {
           if (articulo != null) {
             numeros = ordenarNumeros(numeros);
             agregarArticulo(articulo, numeros, sumaCantidadArticulo, sumaTotalLineaArticulo);
+            articulo = null;
           }
           agregarSumasRuta(sumaCantidadArticuloRuta, sumaTotalLineaArticuloRuta);
           notificar("Procesada ruta " + ruta);
@@ -243,17 +245,37 @@ public class HojaRutaExcel extends EventEmisor {
       }
       if (registro.articulo.equals(articulo)) {
         String desc = registro.descripcion;
-        int index = desc.indexOf("-");
-        if (index != -1) {
-          String nums = desc.substring(index);
-          numeros = numeros + (numeros.isEmpty() ? "" : "-") + nums;
+        
+        if(desc.indexOf("#[")!= -1)
+        {
+          int start = desc.indexOf("#[");
+          int end  = desc.lastIndexOf("]");
+          String nums = desc.substring(start + 2, end);
+            numeros = numeros + (numeros.isEmpty() ? "" : "-") + nums;
+          
+        }
+        else
+        {
+          int index = desc.indexOf("-");
+          if (index != -1) {
+            String nums = desc.substring(index);
+            numeros = numeros + (numeros.isEmpty() ? "" : "-") + nums;
+          }
         }
         sumaCantidadArticulo += registro.cantidad;
         sumaTotalLineaArticulo += registro.totalLinea;
 
         sumaCantidadArticuloRuta += registro.cantidad;
         sumaTotalLineaArticuloRuta += registro.totalLinea;
-
+        
+        if(registro.equals(registros.get(registros.size() - 1)))
+        {
+          if (articulo != null) {
+            notificar("Procesado artículo " + articulo);
+            numeros = ordenarNumeros(numeros);
+            agregarArticulo(articulo, numeros, sumaCantidadArticulo, sumaTotalLineaArticulo);
+          }
+        }
       }
     }
     notificar("Procesamiento de última ruta");

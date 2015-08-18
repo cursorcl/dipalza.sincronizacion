@@ -4,7 +4,8 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-import com.sun.istack.internal.logging.Logger;
+import org.apache.log4j.Logger;
+
 
 public class Utils {
 
