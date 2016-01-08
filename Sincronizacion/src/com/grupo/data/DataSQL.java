@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Vector;
 
 import com.grupo.basedatos.Cliente;
@@ -22,6 +23,7 @@ import com.grupo.constantes.Constantes;
 import com.grupo.forms.FacturaItemModel;
 import com.grupo.forms.FrmFacturasEmitidas;
 import com.grupo.forms.ResultDetalle;
+import com.grupo.forms.SincronizacionMMI;
 import com.grupo.forms.report.ListadoCreditos;
 import com.grupo.forms.report.RegistroVentaCredito;
 import com.grupo.numerados.ListaCorrelativos;
@@ -158,8 +160,10 @@ public class DataSQL extends EventEmisor implements IProcessor {
       float costo = 0.0F;
       float ila = 0.0F;
 
+      Properties props = SincronizacionMMI.PROPERTIES;
+      String lista = props.getProperty("lista", "000");
       strSelect =
-          "select a.articulo,  a.descripcion, b.stock, c.ventaNeto, a.unidad, a.costo, a.porcIla from articulo a , artxlocal b , precios c  where c.articulo = a.articulo  and c.codigolista = '000'  and a.articulo = b.articulo and b.local ='000' and len(a.articulo) = 3 order by left(a.articulo, 2), a.articulo";
+          "select a.articulo,  a.descripcion, b.stock, c.ventaNeto, a.unidad, a.costo, a.porcIla from articulo a , artxlocal b , precios c  where c.articulo = a.articulo  and c.codigolista = '"  + lista + "'  and a.articulo = b.articulo and b.local ='000' and len(a.articulo) = 3 order by left(a.articulo, 2), a.articulo";
 
       pstmt = con.prepareStatement(strSelect);
       res = pstmt.executeQuery();
