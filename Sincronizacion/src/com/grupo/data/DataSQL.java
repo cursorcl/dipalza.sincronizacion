@@ -135,8 +135,21 @@ public class DataSQL extends EventEmisor implements IProcessor {
   }
 
   public VectorProductos getProductos() {
+    
+    String sqlINVDETALLEPARTES =
+        "select sum(cantidad) as stock from invdetallepartes  i, INVENCABEZAPARTES e where articulo = ?   and i.Id =  e.Id and i.Tipoid = 17 and i.Local ='000'";
+    String sqlINVDETALLEPARTES_MINUS =
+        "select sum(cantidad) as stock from invdetallepartes  i, INVENCABEZAPARTES e where articulo = ?   and i.Id =  e.Id  and i.Tipoid = 18 and i.Local ='000'";
+    String sqlDETALLEDOCUMENTOCredito =
+        "select sum(cantidad) as stock from detalledocumento  d, encabezadocumento e where d.articulo = ? and d.local = '000'  and d.tipoid = '09' and d.id = e.id  and e.vigente = 1";
+    String sqlDETALLEDOCUMENTODebito =
+        "select sum(cantidad) as stock from detalledocumento  d, encabezadocumento e where d.articulo = ? and d.local = '000'  and d.tipoid = '06' and d.id = e.id  and e.vigente = 1 ";
+    
     Vector<String> codes = null;
     VectorProductos vProductos = null;
+    
+    
+    
 
     strSelect = "SELECT distinct articulo FROM Numerados";
     try {
@@ -171,7 +184,6 @@ public class DataSQL extends EventEmisor implements IProcessor {
       while (res.next()) {
         articulo = res.getString("articulo");
         descripcion = res.getString("descripcion");
-        stock = res.getFloat("stock");
         ventaNeta = res.getFloat("ventaNeto");
         unidad = res.getString("unidad");
         costo = res.getFloat("costo");
@@ -181,6 +193,46 @@ public class DataSQL extends EventEmisor implements IProcessor {
           unidad = "UNI";
         }
 
+        PreparedStatement pstmt0 = this.con.prepareStatement(sqlINVDETALLEPARTES);
+        pstmt0.setString(1, articulo);
+        ResultSet res0 = pstmt0.executeQuery();
+        stock = 0f;
+        if (res0.next()) {
+          stock = res0.getFloat("stock");
+        }
+        res0.close();
+        pstmt0.close();
+
+        PreparedStatement pstmt1 = this.con.prepareStatement(sqlINVDETALLEPARTES_MINUS);
+        pstmt1.setString(1, articulo);
+        ResultSet res1 = pstmt1.executeQuery();
+        if (res1.next()) {
+          stock = stock - res1.getFloat("stock");
+        }
+        res1.close();
+        pstmt1.close();
+        
+        PreparedStatement pstmt2 = this.con.prepareStatement(sqlDETALLEDOCUMENTOCredito);
+        pstmt2.setString(1, articulo);
+        ResultSet res2 = pstmt2.executeQuery();
+        if (res2.next()) {
+          stock = stock + res2.getFloat("stock");
+        }
+        res2.close();
+        pstmt2.close();
+
+        PreparedStatement pstmt3 = this.con.prepareStatement(sqlDETALLEDOCUMENTODebito);
+        pstmt3.setString(1, articulo);
+        ResultSet res3 = pstmt3.executeQuery();
+        if (res3.next()) {
+          stock = stock - res3.getFloat("stock");
+        }
+        res3.close();
+        pstmt3.close();
+
+        if (stock < 0f)
+          stock = 0f;
+        
         Producto p =
             new Producto(articulo, idProducto, descripcion, stock, ventaNeta, unidad, "", costo,
                 ila);

@@ -44,11 +44,13 @@ public class FacturaSQL {
     short s = 0;
 
     String sqlINVDETALLEPARTES =
-        "select articulo,local ,sum(cantidad) as stock  from invdetallepartes where articulo = ? group by articulo,local order by articulo";
+        "select sum(cantidad) as stock from invdetallepartes  i, INVENCABEZAPARTES e where articulo = ?   and i.Id =  e.Id and i.Tipoid = 17 and i.Local ='000'";
+    String sqlINVDETALLEPARTES_MINUS =
+        "select sum(cantidad) as stock from invdetallepartes  i, INVENCABEZAPARTES e where articulo = ?   and i.Id =  e.Id  and i.Tipoid = 18 and i.Local ='000'";
     String sqlDETALLEDOCUMENTOCredito =
-        "select articulo, sum(cantidad) as stock from detalledocumento where articulo = ? and local = '000'  and tipoid = '09' group by articulo order by articulo";
+        "select sum(cantidad) as stock from detalledocumento  d, encabezadocumento e where d.articulo = ? and d.local = '000'  and d.tipoid = '09' and d.id = e.id  and e.vigente = 1";
     String sqlDETALLEDOCUMENTODebito =
-        "select articulo, sum(cantidad) as stock from detalledocumento where articulo = ? and local = '000'  and tipoid = '06' group by articulo order by articulo";
+        "select sum(cantidad) as stock from detalledocumento  d, encabezadocumento e where d.articulo = ? and d.local = '000'  and d.tipoid = '06' and d.id = e.id  and e.vigente = 1 ";
 
     Properties props = SincronizacionMMI.PROPERTIES;
     String lista = props.getProperty("lista", "000");
@@ -58,16 +60,26 @@ public class FacturaSQL {
 
     try {
 
-      PreparedStatement pstmt1 = this.con.prepareStatement(sqlINVDETALLEPARTES);
+      PreparedStatement pstmt0 = this.con.prepareStatement(sqlINVDETALLEPARTES);
+      pstmt0.setString(1, articulo);
+      ResultSet res0 = pstmt0.executeQuery();
+      float stock = 0f;
+      if (res0.next()) {
+        stock = res0.getFloat("stock");
+      }
+      res0.close();
+      pstmt0.close();
+
+      PreparedStatement pstmt1 = this.con.prepareStatement(sqlINVDETALLEPARTES_MINUS);
       pstmt1.setString(1, articulo);
       ResultSet res1 = pstmt1.executeQuery();
-      float stock = 0f;
       if (res1.next()) {
-        stock = res1.getFloat("stock");
+        stock = stock - res1.getFloat("stock");
       }
       res1.close();
       pstmt1.close();
 
+      
       PreparedStatement pstmt2 = this.con.prepareStatement(sqlDETALLEDOCUMENTOCredito);
       pstmt2.setString(1, articulo);
       ResultSet res2 = pstmt2.executeQuery();
