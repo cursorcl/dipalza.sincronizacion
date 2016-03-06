@@ -33,17 +33,17 @@ public class DataBaseConnection {
     String host = "localhost";
     int port = 1433;
     String baseDatos = "mastersoft";
-    String instanceName = "sqlexpress";
-    String user = "cursor";
+    String instanceName = "trauco";
+    String user = "sa";
     String password = "_l2j1rs2";
     try {
       if (SincronizacionMMI.PROPERTIES != null) {
         Properties props = SincronizacionMMI.PROPERTIES;
         host = props.getProperty("host", "localhost");
-        instanceName = props.getProperty("instance", "sqlexpress");
+        instanceName = props.getProperty("instance", "trauco");
         port = Integer.parseInt(props.getProperty("port", "1433"));
         baseDatos = props.getProperty("basedatos", "mastersoft");
-        user = props.getProperty("user", "cursor");
+        user = props.getProperty("user", "sa");
         password = props.getProperty("password", "_l2j1rs2");
         props = null;
       }

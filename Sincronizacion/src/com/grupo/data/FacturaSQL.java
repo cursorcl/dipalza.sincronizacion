@@ -682,4 +682,90 @@ public class FacturaSQL {
     }
     return codigo;
   }
+  
+  
+  public static void main(String[] args) {
+    
+    
+      String articulo = "493";
+      
+      Connection con = DataBaseConnection.getInstance().getConnectionDB();
+      
+      Producto p = null;
+      short s = 0;
+
+      String sqlINVDETALLEPARTES =
+          "select sum(cantidad) as stock from invdetallepartes  i, INVENCABEZAPARTES e where articulo = ?   and i.Id =  e.Id and i.Tipoid = 17 and i.Local ='000'";
+      String sqlINVDETALLEPARTES_MINUS =
+          "select sum(cantidad) as stock from invdetallepartes  i, INVENCABEZAPARTES e where articulo = ?   and i.Id =  e.Id  and i.Tipoid = 18 and i.Local ='000'";
+      String sqlDETALLEDOCUMENTOCredito =
+          "select sum(cantidad) as stock from detalledocumento  d, encabezadocumento e where d.articulo = ? and d.local = '000'  and d.tipoid = '09' and d.id = e.id  and e.vigente = 1";
+      String sqlDETALLEDOCUMENTODebito =
+          "select sum(cantidad) as stock from detalledocumento  d, encabezadocumento e where d.articulo = ? and d.local = '000'  and d.tipoid = '06' and d.id = e.id  and e.vigente = 1 ";
+
+      String lista =  "001";
+      String strSelect =
+          "Select a.descripcion, p.ventaneto, a.costo, a.porcIla from articulo as a, precios as p where a.articulo = ? and p.articulo = a.articulo and p.codigolista ='"
+              + lista + "'";
+
+      try {
+
+        PreparedStatement pstmt0 = con.prepareStatement(sqlINVDETALLEPARTES);
+        pstmt0.setString(1, articulo);
+        ResultSet res0 = pstmt0.executeQuery();
+        float stock = 0f;
+        if (res0.next()) {
+          stock = res0.getFloat("stock");
+        }
+        res0.close();
+        pstmt0.close();
+
+        PreparedStatement pstmt1 = con.prepareStatement(sqlINVDETALLEPARTES_MINUS);
+        pstmt1.setString(1, articulo);
+        ResultSet res1 = pstmt1.executeQuery();
+        if (res1.next()) {
+          stock = stock - res1.getFloat("stock");
+        }
+        res1.close();
+        pstmt1.close();
+
+        
+        PreparedStatement pstmt2 = con.prepareStatement(sqlDETALLEDOCUMENTOCredito);
+        pstmt2.setString(1, articulo);
+        ResultSet res2 = pstmt2.executeQuery();
+        if (res2.next()) {
+          stock = stock + res2.getFloat("stock");
+        }
+        res2.close();
+        pstmt2.close();
+
+        PreparedStatement pstmt3 = con.prepareStatement(sqlDETALLEDOCUMENTODebito);
+        pstmt3.setString(1, articulo);
+        ResultSet res3 = pstmt3.executeQuery();
+        if (res3.next()) {
+          stock = stock - res3.getFloat("stock");
+        }
+        res3.close();
+        pstmt3.close();
+
+        if (stock < 0f)
+          stock = 0f;
+
+        PreparedStatement pstmt4 = con.prepareStatement(strSelect);
+        pstmt4.setString(1, articulo);
+        ResultSet res4 = pstmt4.executeQuery();
+        if (res4.next())
+        {
+          p =
+              new Producto(articulo, s, res4.getString("descripcion"), stock,
+                  res4.getFloat("ventaneto"), "", "", res4.getFloat("costo"), res4.getFloat("porcIla"));
+        }
+        res4.close();
+        pstmt4.close();
+        
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+      System.out.println(p +  " " + p.getStock());
+  }
 }

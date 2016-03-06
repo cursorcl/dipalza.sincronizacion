@@ -20,6 +20,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.EventObject;
 import java.util.Properties;
@@ -53,6 +54,7 @@ import com.grupo.biblioteca.server.events.ConnectionServerEvent;
 import com.grupo.biblioteca.server.events.Notificable;
 import com.grupo.data.ProcessorServer;
 import com.grupo.forms.report.HojaRutaExcel;
+import com.grupo.numerados.balanza.ClienteSockeBalanza;
 import com.grupo.numerados.controller.ControladorNumerados;
 import com.grupo.numerados.view.DialogNumerados;
 import com.grupo.util.EventMsg;
@@ -91,6 +93,8 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 
   private DlgFecha dlgFecha = new DlgFecha();
   private Logger log = Logger.getLogger(SincronizacionMMI.class);
+  private ClienteSockeBalanza balanza;
+
   public SincronizacionMMI() {
     setAlwaysOnTop(true);
     setTitle("VENTAS DIPALZA");
@@ -102,17 +106,15 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 
 
       PROPERTIES = new Properties();
-      log.debug(Utils.getDefaultDirectory()  + "\\sqlserver.properties");
-      File fProp =  new File(Utils.getDefaultDirectory()  + "\\sqlserver.properties");
+      log.debug(Utils.getDefaultDirectory() + "\\sqlserver.properties");
+      File fProp = new File(Utils.getDefaultDirectory() + "\\sqlserver.properties");
       if (fProp.exists()) {
         log.debug("Archivo de propiedades encontrado correctamente");
         PROPERTIES.load(new FileReader(fProp));
-      }
-      else
-      {
+      } else {
         log.debug("Archivo de propiedades NO encontrado:" + fProp.getAbsolutePath());
       }
-      
+
 
     } catch (IOException e) {
       BasicConfigurator.configure();
@@ -129,7 +131,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
     this.data =
         new ProcessorServer(new FechaFormateada(this.cmbFechaFacturacion.getDate()), server);
     this.data.addEventMsgListener(this);
-    // HojaRuta.getInstance().addEventMsgListener(this);
+    balanza = new ClienteSockeBalanza("192.168.1.100", this);
   }
 
   private void initialize() {
@@ -538,6 +540,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
   public void salir() {
     if (SincronizacionMMI.this.data != null) {
       data.close();
+      balanza.disconnect();
     }
     System.exit(0);
   }
