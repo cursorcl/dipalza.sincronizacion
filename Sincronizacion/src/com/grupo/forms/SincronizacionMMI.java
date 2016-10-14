@@ -4,14 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -31,6 +27,7 @@ import java.util.TreeSet;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -65,7 +62,6 @@ import com.grupo.util.WindowsUtil;
 import com.grupo.utilitarios.FechaFormateada;
 
 import cl.eos.util.Utils;
-import javax.swing.JCheckBoxMenuItem;
 
 public class SincronizacionMMI extends JFrame implements EventMsgListener, Notificable {
 	private static final long serialVersionUID = 1L;
@@ -125,9 +121,10 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 			} else {
 				log.debug("Archivo de propiedades NO encontrado:" + fProp.getAbsolutePath());
 			}
-
+			factura_electronica = ((String) PROPERTIES.getProperty("ELECTRONICA", "FALSE")).equalsIgnoreCase("TRUE");
+			
 			initialize();
-			setTitle(getTitle() + (chckbxmntmFacturacinElectrnica.isSelected() ? " CON ": " SIN ") + "FACTURACIÓN ELECTRONICA");
+			
 
 		} catch (IOException e) {
 			BasicConfigurator.configure();
@@ -147,6 +144,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 
 	private void initialize() {
 		setSize(new Dimension(556, 410));
+		setTitle(getTitle() + (factura_electronica ? " CON ": " SIN ") + "FACTURACIÓN ELECTRONICA");
 		this.setJMenuBar(getMnuSistema());
 		setContentPane(getJPanel());
 		graphicInit();
@@ -567,9 +565,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 	private JCheckBoxMenuItem getChckbxmntmFacturacinElectrnica() {
 		if (chckbxmntmFacturacinElectrnica == null) {
 			chckbxmntmFacturacinElectrnica = new JCheckBoxMenuItem("Facturación Electrónica");
-			boolean checked = ((String) PROPERTIES.getProperty("ELECTRONICA", "FALSE")).equalsIgnoreCase("TRUE");
-			setTitle(getTitle() + (checked ? " CON ": " SIN ") + "FACTURACIÓN ELECTRONICA");
-			chckbxmntmFacturacinElectrnica.setSelected(checked);
+			chckbxmntmFacturacinElectrnica.setSelected(factura_electronica);
 			chckbxmntmFacturacinElectrnica.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {

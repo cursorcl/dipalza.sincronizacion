@@ -178,10 +178,10 @@ public class FacturaSQL {
     String result = getId();
     if (result != null) {
       try {
-    	  String numero = getNumero();
+    	String numero = getNumero();
         PreparedStatement pstmt =
             this.con
-                .prepareStatement("insert into encabezadocumento (fecha, vence, afectoexento, rut, local, id, tipo, numero, codigo, tipo1, publicadonro ) values  (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                .prepareStatement("insert into encabezadocumento (fecha, vence, afectoexento, rut, local, id, tipo, numero, codigo, tipo1, publicadonro ) values  (?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)");
 
         pstmt.setDate(1, new Date(pEncabezado.getFecha().getTime()));
         pstmt.setDate(2, new Date(addDay(pEncabezado).getTime()));
@@ -193,7 +193,14 @@ public class FacturaSQL {
         pstmt.setString(7, "06");
         pstmt.setString(8, numero);
         pstmt.setString(9, pEncabezado.getCodigoCliente() + " ");
-        pstmt.setString(10, "E");
+        if(SincronizacionMMI.factura_electronica)
+        {
+        	pstmt.setString(10, "E");
+        }
+        else
+        {
+        	pstmt.setString(10, " ");
+        }
         pstmt.setString(11, numero);
         
         pstmt.executeUpdate();
@@ -243,9 +250,6 @@ public class FacturaSQL {
       if (pr != null) {
         String numeros = "";
         nombreProducto = pr.getNombre();
-        // QUITAR UNA VEZ QUE TENGA LOS PRECIOS DESDE CELULAR
-        pVenta.setPrecio(pr.getPrecio());
-        // QUITAR UNA VEZ QUE TENGA LOS PRECIOS DESDE CELULAR
         int nVenta = (int) pVenta.getCantidad();
         int cantidadVenta = nVenta;
 
@@ -279,7 +283,7 @@ public class FacturaSQL {
             n = r.getInt("numero");
             numeros = numeros + (numeros.isEmpty() ? "" : "-") + n;
             venta += r.getFloat("peso");
-            ventNeto = venta * pVenta.getPrecio();
+            ventNeto = venta * pr.getPrecio();
             ventNeto *= (1.0F - pVenta.getDescuento() / 100.0F);
 
             // insert into registroNumerados values(articulo,
@@ -311,7 +315,7 @@ public class FacturaSQL {
             if (difStock < 0.0F) {
               result.setFaltante(venta - pr.getStock());
               venta = pr.getStock();
-              ventNeto = venta * pVenta.getPrecio() * (1.0F - pVenta.getDescuento() / 100.0F);
+              ventNeto = venta * pr.getPrecio() * (1.0F - pVenta.getDescuento() / 100.0F);
               result.setResult(1);
             }
             procesa = true;
@@ -334,7 +338,7 @@ public class FacturaSQL {
           PreparedStatement pstmt =
               this.con
                   .prepareStatement("insert into detalledocumento (precioventa, totallinea, paridad, preciocosto, cantidad, id, linea, tipoid, local, articulo, descripcion, variacion) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-          pstmt.setFloat(1, pVenta.getPrecio());
+          pstmt.setFloat(1, pr.getPrecio());
           pstmt.setFloat(2, ventNeto);
           pstmt.setFloat(3, 1.0F);
           pstmt.setFloat(4, pr.getCosto());
@@ -539,9 +543,18 @@ public class FacturaSQL {
     boolean result = false;
     try {
       PreparedStatement pstmt =
-          this.con.prepareStatement("INSERT INTO folios (NUMERO, TIPO) VALUES (? , ?)");
+          this.con.prepareStatement("INSERT INTO folios (NUMERO, TIPO, TIPO1) VALUES (? , ?, ?)");
       pstmt.setString(1, nroFactura);
       pstmt.setString(2, "06");
+      
+      if(SincronizacionMMI.factura_electronica)
+      {
+      	pstmt.setString(3, "E");
+      }
+      else
+      {
+      	pstmt.setString(3, " ");
+      }
       result = pstmt.executeUpdate() == 1;
     } catch (SQLException e1) {
       result = false;
