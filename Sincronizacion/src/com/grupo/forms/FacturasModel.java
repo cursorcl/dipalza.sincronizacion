@@ -6,7 +6,7 @@
  
  public class FacturasModel extends AbstractTableModel
  {
-  private static final long serialVersionUID = 7126031323775244990L;
+  private static final long serialVersionUID = 1L;
 
  
    private Vector<FacturaItemModel> data = null;

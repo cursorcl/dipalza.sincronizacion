@@ -1,16 +1,20 @@
  package com.grupo.forms;
  
  import java.awt.BorderLayout;
- import java.awt.Dimension;
- import java.awt.FlowLayout;
- import java.awt.Frame;
- import java.awt.GridBagLayout;
- import javax.swing.JButton;
- import javax.swing.JPanel;
- import javax.swing.JScrollPane;
- import javax.swing.JTable;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
+import java.awt.Point;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+
+import com.grupo.util.WindowsUtil;
  
- public class Facturas extends Frame
+ public class Facturas extends JFrame
  {
    private static final long serialVersionUID = 1L;
    private JPanel pnlNorte = null;
@@ -107,13 +111,18 @@
  
    private void initialize()
    {
+     Point center = WindowsUtil.getScreenCenter();
+     
      setSize(566, 342);
+     setLocation(center.x - this.getWidth() / 2, center.y - this.getHeight() / 2);
      setTitle("Facturas Generadas");
- 
+     
      add(getPnlNorte(), "North");
      add(getPnlSur(), "South");
      add(getPnlEste(), "East");
      add(getPnlOeste(), "West");
      add(getPnlCentro(), "Center");
+     
+     
    }
  }

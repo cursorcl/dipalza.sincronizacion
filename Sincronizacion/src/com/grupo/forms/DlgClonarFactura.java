@@ -1,13 +1,16 @@
  package com.grupo.forms;
  
  import com.grupo.data.DataSQL;
- import java.awt.Dimension;
+import com.grupo.util.WindowsUtil;
+
+import java.awt.Dimension;
  import java.awt.Font;
  import java.awt.Frame;
  import java.awt.GridBagConstraints;
  import java.awt.GridBagLayout;
  import java.awt.Insets;
- import java.awt.event.ActionEvent;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
  import java.awt.event.ActionListener;
  import javax.swing.JButton;
  import javax.swing.JDialog;
@@ -43,6 +46,8 @@
      setSize(340, 166);
      setTitle("Copia Factura");
      setContentPane(getJContentPane());
+     Point center = WindowsUtil.getScreenCenter();
+     setLocation(center.x - this.getWidth() / 2, center.y - this.getHeight() / 2);
    }
  
    private JPanel getJContentPane()

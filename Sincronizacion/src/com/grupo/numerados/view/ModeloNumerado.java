@@ -14,7 +14,7 @@ import com.grupo.numerados.ProductosNumerados;
  * @author cursor
  */
 public class ModeloNumerado extends AbstractTableModel {
-    private static final long serialVersionUID = 5342287819938676202L;
+    private static final long serialVersionUID = 1L;
     private final String[] COLUMNAS = { "CODIGO", "PESO", "PRODUCTO", "NUMERO" };
     private List<ProductosNumerados> datos;
 

@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,6 +24,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
+
+import com.grupo.util.WindowsUtil;
  
  public class FrmFacturasEmitidas extends JFrame
  {
@@ -67,6 +70,8 @@ import javax.swing.table.TableColumn;
      setPreferredSize(new Dimension(479, 700));
      setTitle("Facturas Emitidas");
      setContentPane(getJContentPane());
+     Point center = WindowsUtil.getScreenCenter();
+     setLocation(center.x - this.getWidth() / 2, center.y - this.getHeight() / 2);
    }
  
    private JPanel getJContentPane()

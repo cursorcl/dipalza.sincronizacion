@@ -13,8 +13,13 @@ import javax.swing.border.TitledBorder;
 import net.miginfocom.swing.MigLayout;
 
 import org.freixas.jcalendar.JCalendar;
+
+import com.grupo.util.WindowsUtil;
+
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
+
 import javax.swing.JPanel;
 import java.awt.FlowLayout;
 
@@ -45,15 +50,15 @@ public class DlgFecha extends JDialog {
    * Create the dialog.
    */
   public DlgFecha() {
-    setMinimumSize(new Dimension(350, 280));
-    setMaximumSize(new Dimension(2147483647, 500));
-    setSize(new Dimension(350, 280));
-    setPreferredSize(new Dimension(350, 280));
+    setSize(new Dimension(320, 320));
     setAlwaysOnTop(true);
     setModal(true);
+    
+    Point center = WindowsUtil.getScreenCenter();
+    setLocation(center.x - this.getWidth() / 2, center.y - this.getHeight() / 2);
+    
 //    setType(Type.POPUP);
     setTitle("Seleccione Fecha");
-    setBounds(100, 100, 320, 230);
     getContentPane().setLayout(new MigLayout("", "[32.00,grow]", "[149.00,grow,top][]"));
     
     calendar = new JCalendar();
