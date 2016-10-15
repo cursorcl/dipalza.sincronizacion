@@ -97,6 +97,8 @@ public class ProcessorServer extends EventEmisor implements Notificable {
   public void sendProductos(IDUnit palm) {
     VectorProductos vProductos = this.data.getProductos();
 
+    log.info("Se van a enviar productos");
+    
     MessageToTransmit m = new MessageToTransmit();
     m.setIdPalm(palm);
     m.setType(EMessagesTypes.MSG_INFORMATIVE);
@@ -106,12 +108,13 @@ public class ProcessorServer extends EventEmisor implements Notificable {
     m.setData(info);
     connectionClient.send(m);
 
+    log.info("Se enviaron productos");
     m = new MessageToTransmit();
     m.setIdPalm(palm);
     m.setType(EMessagesTypes.MSG_VECTORPRODUCTOS);
     m.setData(vProductos);
     connectionClient.send(m);
-
+   
     m = new MessageToTransmit();
     m.setIdPalm(palm);
     m.setType(EMessagesTypes.MSG_INITIALIZE_PRODUCTO_FINALIZED);
