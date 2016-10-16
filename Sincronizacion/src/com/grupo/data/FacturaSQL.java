@@ -283,7 +283,7 @@ public class FacturaSQL {
             n = r.getInt("numero");
             numeros = numeros + (numeros.isEmpty() ? "" : "-") + n;
             venta += r.getFloat("peso");
-            ventNeto = venta * pr.getPrecio();
+            ventNeto = venta * pVenta.getPrecio();
             ventNeto *= (1.0F - pVenta.getDescuento() / 100.0F);
 
             // insert into registroNumerados values(articulo,
@@ -315,7 +315,7 @@ public class FacturaSQL {
             if (difStock < 0.0F) {
               result.setFaltante(venta - pr.getStock());
               venta = pr.getStock();
-              ventNeto = venta * pr.getPrecio() * (1.0F - pVenta.getDescuento() / 100.0F);
+              ventNeto = venta * pVenta.getPrecio() * (1.0F - pVenta.getDescuento() / 100.0F);
               result.setResult(1);
             }
             procesa = true;
@@ -338,7 +338,7 @@ public class FacturaSQL {
           PreparedStatement pstmt =
               this.con
                   .prepareStatement("insert into detalledocumento (precioventa, totallinea, paridad, preciocosto, cantidad, id, linea, tipoid, local, articulo, descripcion, variacion) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-          pstmt.setFloat(1, pr.getPrecio());
+          pstmt.setFloat(1, pVenta.getPrecio());
           pstmt.setFloat(2, ventNeto);
           pstmt.setFloat(3, 1.0F);
           pstmt.setFloat(4, pr.getCosto());

@@ -511,7 +511,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
 	private ItemVenta getConduccion(String rut) {
 		Producto pr = factura.getConduccion(rut);
 
-		return new ItemVenta((short) 0, pr.getArticulo(), 1.0F, pr.getPrecio(), 0.0F, 0.0F);
+		return new ItemVenta((short) 0, pr.getArticulo(), 1.0F, pr.getPrecio(), 0.0F, 0.0F, pr.getPrecio());
 	}
 
 	private boolean isClienteInDB(String rut) {
