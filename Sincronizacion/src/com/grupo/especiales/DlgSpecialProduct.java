@@ -288,7 +288,7 @@ public class DlgSpecialProduct extends JDialog {
       btnAceptar = new JButton("Aceptar");
       btnAceptar.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          if (!model.isEmpty()) {
+          if (model != null) {
             List<RangoEspeciales> lstRangos = new ArrayList<>();
             for(int n = 0; n < model.size(); n++)
             {

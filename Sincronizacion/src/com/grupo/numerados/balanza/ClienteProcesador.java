@@ -33,7 +33,7 @@ public class ClienteProcesador extends Notifier implements Runnable {
   public static final byte FINISHED = 8;
 
   BlockingQueue<Object> queue;
-  boolean isAlive;
+  boolean isAlive = true;
 
   ControladorNumerados controlador = new ControladorNumerados();
 

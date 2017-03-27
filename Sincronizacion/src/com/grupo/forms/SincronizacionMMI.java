@@ -64,6 +64,7 @@ import com.grupo.utilitarios.FechaFormateada;
 import cl.eos.util.Utils;
 
 public class SincronizacionMMI extends JFrame implements EventMsgListener, Notificable {
+	private static final String NROLINEASFACTURA = "NROLINEASFACTURA";
 	private static final long serialVersionUID = 1L;
 	static Logger logger = Logger.getLogger(SincronizacionMMI.class);
 
@@ -100,12 +101,13 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 	protected SpecialProductControl specialController;
 	private JSeparator separator;
 	private JCheckBoxMenuItem chckbxmntmFacturacinElectrnica;
-	
+
 	public static boolean factura_electronica = false;
+	private JMenuItem mnuLineaFacturas;
+	public static Integer nroLineas;
 
 	public SincronizacionMMI() {
 		setAlwaysOnTop(true);
-		
 
 		Properties logProperties = new Properties();
 		try {
@@ -122,9 +124,10 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 				log.debug("Archivo de propiedades NO encontrado:" + fProp.getAbsolutePath());
 			}
 			factura_electronica = ((String) PROPERTIES.getProperty("ELECTRONICA", "FALSE")).equalsIgnoreCase("TRUE");
-			
+
+			nroLineas = Integer.parseInt(PROPERTIES.getProperty(NROLINEASFACTURA, "25"));
+
 			initialize();
-			
 
 		} catch (IOException e) {
 			BasicConfigurator.configure();
@@ -144,7 +147,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 
 	private void initialize() {
 		setSize(new Dimension(556, 410));
-		setTitle(getTitle() + (factura_electronica ? " CON ": " SIN ") + "FACTURACIÓN ELECTRONICA");
+		setTitle(getTitle() + (factura_electronica ? " CON " : " SIN ") + "FACTURACIÓN ELECTRONICA");
 		this.setJMenuBar(getMnuSistema());
 		setContentPane(getJPanel());
 		graphicInit();
@@ -338,10 +341,11 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 		if (mnuPPal == null) {
 			mnuPPal = new JMenu();
 			mnuPPal.setText("Operaciones");
-			mnuPPal.add(getMnuReporte());
+			mnuPPal.add(getMnuClonar());
 			// mnuPPal.add(getMnuCreditos());
 			mnuPPal.add(getMnuNumerados());
-			mnuPPal.add(getMnuClonar());
+			mnuPPal.add(getMnuReporte());
+			mnuPPal.add(getMnuLineaFacturas());
 			mnuPPal.add(getMntmArticulosEspeciales());
 			mnuPPal.add(getSeparator());
 			mnuPPal.add(getChckbxmntmFacturacinElectrnica());
@@ -379,7 +383,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 	private JMenuItem getMnuNumerados() {
 		if (mnuNumerados == null) {
 			mnuNumerados = new JMenuItem();
-			mnuNumerados.setText("Agregar Numerados");
+			mnuNumerados.setText("Numerados (+ -)");
 			mnuNumerados.addActionListener(new ActionListener() {
 
 				@Override
@@ -536,7 +540,8 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 			InetAddress thisIp = event.getServer().getInetAddress();
 			String ipAddress = String.format("%s:%d", thisIp.toString(), event.getServer().getLocalPort());
 			setTitle("Ventas " + ipAddress);
-			setTitle(getTitle() + (chckbxmntmFacturacinElectrnica.isSelected() ? " CON ": " SIN ") + "FACTURACIÓN ELECTRONICA");
+			setTitle(getTitle() + (chckbxmntmFacturacinElectrnica.isSelected() ? " CON " : " SIN ")
+					+ "FACTURACIÓN ELECTRONICA");
 		}
 	}
 
@@ -569,12 +574,13 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 			chckbxmntmFacturacinElectrnica.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					
+
 					factura_electronica = chckbxmntmFacturacinElectrnica.isSelected();
-					int idx =  getTitle().indexOf("FACTURACIÓN ELECTRONICA") - 5;
+					int idx = getTitle().indexOf("FACTURACIÓN ELECTRONICA") - 5;
 					String title = getTitle().substring(0, idx);
-					SincronizacionMMI.this.setTitle(title + (factura_electronica ? " CON ": " SIN ") + "FACTURACIÓN ELECTRONICA");
-					
+					SincronizacionMMI.this
+							.setTitle(title + (factura_electronica ? " CON " : " SIN ") + "FACTURACIÓN ELECTRONICA");
+
 					PROPERTIES.put("ELECTRONICA", factura_electronica ? "TRUE" : "FALSE");
 					Properties tmp = new Properties() {
 						private static final long serialVersionUID = 1L;
@@ -595,5 +601,49 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 			});
 		}
 		return chckbxmntmFacturacinElectrnica;
+	}
+
+	private JMenuItem getMnuLineaFacturas() {
+		if (mnuLineaFacturas == null) {
+			mnuLineaFacturas = new JMenuItem("Líneas Factura");
+			mnuLineaFacturas.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					boolean valid = false;
+					while (!valid) {
+						String lineas = JOptionPane.showInputDialog(SincronizacionMMI.this, "Ingrese Número de Líneas",
+								nroLineas);
+						if(lineas == null)
+							break;
+						try {
+							nroLineas = Integer.parseInt(lineas);
+							valid =  true;
+						} catch (Exception error) {
+							valid =  false;
+							JOptionPane.showMessageDialog(SincronizacionMMI.this, "Ingres un valor numérico", "Error", JOptionPane.ERROR_MESSAGE, null);
+						}
+					}
+					PROPERTIES.put("NROLINEASFACTURA", String.valueOf(nroLineas));
+					Properties tmp = new Properties() {
+						private static final long serialVersionUID = 1L;
+
+						@Override
+						public synchronized Enumeration<Object> keys() {
+							return Collections.enumeration(new TreeSet<Object>(super.keySet()));
+						}
+					};
+					tmp.putAll(PROPERTIES);
+					File fProp = new File(Utils.getDefaultDirectory() + "\\sqlserver.properties");
+					try {
+						tmp.store(new FileWriter(fProp), null);
+					} catch (IOException e1) {
+						log.error("Archivo de propiedades NO encontrado:" + fProp.getAbsolutePath());
+					}
+				}
+			});
+
+		}
+		return mnuLineaFacturas;
 	}
 } // @jve:decl-index=0:visual-constraint="19,27"

@@ -345,7 +345,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
 						// Limpio los valores para el reporte de deudores
 						ListadoCreditos.getInstance().clear();
 						while (nItemes < filasV.size()) {
-							if (nItemes % 25 == 0) {
+							if (nItemes % SincronizacionMMI.nroLineas == 0) {
 								ila = 0.0F;
 								neto = 0.0F;
 								id = factura.insertEncabezado(v);
@@ -365,7 +365,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
 									ListadoCreditos.getInstance().add(registro);
 								}
 							}
-							for (j = 1; (j <= 25) && (nItemes < filasV.size()); j++) {
+							for (j = 1; (j <= SincronizacionMMI.nroLineas) && (nItemes < filasV.size()); j++) {
 								ItemVenta iv = (ItemVenta) filasV.elementAt(nItemes);
 								ResultDetalle r = factura.insertDetalleVenta(iv, id, j);
 								if ((r.getResult() == 1) || (r.getResult() == 2)) {
@@ -434,7 +434,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
 				boolean allItems = true;
 
 				while (nItemes < itemes.size()) {
-					if (nItemes % 25 == 0) {
+					if (nItemes % SincronizacionMMI.nroLineas == 0) {
 						ila = 0.0F;
 						neto = 0.0F;
 						id = factura.insertEncabezado(encabezado);
@@ -458,12 +458,12 @@ public class DataSQL extends EventEmisor implements IProcessor {
 						}
 					}
 
-					for (j = 1; j <= 25 && nItemes < itemes.size(); ++nItemes, ++j) {
-						ItemVenta iv = itemes.elementAt(nItemes);
-						ResultDetalle r = factura.insertDetalleVenta(iv, id, j);
+					for (j = 1; j <= SincronizacionMMI.nroLineas && nItemes < itemes.size(); ++nItemes, ++j) {
+						ItemVenta itemLineaVenta = itemes.elementAt(nItemes);
+						ResultDetalle r = factura.insertDetalleVenta(itemLineaVenta, id, j);
 						if ((r.getResult() == 1) || (r.getResult() == 2)) {
 							allItems = false;
-							Producto pr = factura.getDatosProducto(iv.getArticulo());
+							Producto pr = factura.getDatosProducto(itemLineaVenta.getArticulo());
 							mmiFaturas.addItemFallido(nroFactura + " : " + pr.getArticulo() + " " + pr.getNombre() + " "
 									+ r.getFaltante());
 						}
@@ -675,13 +675,35 @@ public class DataSQL extends EventEmisor implements IProcessor {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		String strSelect = "select count(*) from numerados where articulo = ?";
+		try {
+			pstmt = con.prepareStatement(strSelect);
+			pstmt.setString(1, numerado.getArticulo());
+			ResultSet rSet = pstmt.executeQuery();
+			int rows = -1;
+			if (rSet.next()) {
+				rows = rSet.getInt(1);
+			}
+			rSet.close();
+			pstmt.close();
+			if (rows == 0) {
+				strDelete = "delete from articulosnumerados where articulo = ? ";
+				pstmt = con.prepareStatement(strDelete);
+				pstmt.setString(1, numerado.getArticulo());
+				pstmt.executeUpdate();
+				pstmt.close();
+				con.commit();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 	}
 
 	public void addNumerado(ProductosNumerados numerado) {
 		String strFindNumero = "select * from articulosnumerados where articulo = (?)";
 		String strInsertNumero = "insert into articulosnumerados (articulo) values (?)";
-		String strInsert = "insert into numerados (articulo, peso, numero) values (?, ?, ?)";
+		String strInsert = "insert into numerados (articulo, peso, numero, narticulo) values (?, ?, ?, ?)";
 
 		try {
 			PreparedStatement pstmt = con.prepareStatement(strFindNumero);
@@ -694,10 +716,18 @@ public class DataSQL extends EventEmisor implements IProcessor {
 				pstmtInsert.close();
 			}
 			pstmt.close();
+			int narticulo = 0;
+			try {
+				narticulo = Integer.parseInt(numerado.getArticulo());
+			} catch (Exception e) {
+				narticulo = 0;
+			}
+
 			pstmt = con.prepareStatement(strInsert);
 			pstmt.setString(1, numerado.getArticulo());
 			pstmt.setFloat(2, numerado.getPesoQueso());
 			pstmt.setInt(3, numerado.getCorrelativo());
+			pstmt.setInt(4, narticulo);
 			pstmt.executeUpdate();
 			pstmt.close();
 			con.commit();
@@ -783,7 +813,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
 		try {
 			PreparedStatement pstmt = con.prepareStatement(sqlDel);
 			pstmt.executeUpdate();
-
+			con.commit();
 			for (RangoEspeciales rng : rangos) {
 				pstmt = con.prepareStatement(sqlIns);
 				pstmt.setString(1, rng.getArticuloInicial());
