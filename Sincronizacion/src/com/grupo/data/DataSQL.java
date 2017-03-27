@@ -680,7 +680,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
 			pstmt = con.prepareStatement(strSelect);
 			pstmt.setString(1, numerado.getArticulo());
 			ResultSet rSet = pstmt.executeQuery();
-			int rows = -1;
+			int rows = 0;
 			if (rSet.next()) {
 				rows = rSet.getInt(1);
 			}

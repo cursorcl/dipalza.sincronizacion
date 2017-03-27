@@ -305,6 +305,26 @@ public class FacturaSQL {
 							stmNumerado.close();
 						}
 					}
+					stmNumerado = this.con.prepareStatement("select count(*) from numerados where articulo = ?");
+					stmNumerado.setString(1, articulo);
+					r = stmNumerado.executeQuery();
+					int rows = 0;
+					if(r.next())
+					{ 
+						rows = r.getInt(1);
+					}
+					r.close();
+					stmNumerado.close();
+					//Elimino de la tabla articulosnumerados
+					if (rows == 0) {
+						String strDelete = "delete from articulosnumerados where articulo = ? ";
+						stmNumerado = con.prepareStatement(strDelete);
+						stmNumerado.setString(1, articulo);
+						stmNumerado.executeUpdate();
+						stmNumerado.close();
+						con.commit();
+					}
+					
 				}
 				if (!isNumerated) {
 					float difStock = pr.getStock() - venta;
