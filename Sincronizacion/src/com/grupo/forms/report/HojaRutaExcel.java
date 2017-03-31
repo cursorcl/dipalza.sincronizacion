@@ -59,10 +59,14 @@ public class HojaRutaExcel extends EventEmisor {
 	/**
 	 * Query de todos las ventas de un día de numerados
 	 */
+//	private String query = "SELECT M.Ruta as ruta, D.Articulo as articulo, D.descripcion, D.Cantidad AS cantidad, D.TotalLinea AS totalLinea "
+//			+ "FROM ENCABEZADOCUMENTO AS E, DETALLEDOCUMENTO AS D, MSOCLIENTES AS M "
+//			+ "WHERE E.Id=D.Id AND  E.Rut = M.Rut AND E.codigo = M.codigo and E.tipo = '06' and E.vigente  = 1 AND D.Articulo in ( select articulo from articulosnumerados) and  E.Fecha = ?  "
+//			+ "ORDER BY M.Ruta, D.Articulo";
 	private String query = "SELECT M.Ruta as ruta, D.Articulo as articulo, D.descripcion, D.Cantidad AS cantidad, D.TotalLinea AS totalLinea "
-			+ "FROM ENCABEZADOCUMENTO AS E, DETALLEDOCUMENTO AS D, MSOCLIENTES AS M "
-			+ "WHERE E.Id=D.Id AND  E.Rut = M.Rut AND E.codigo = M.codigo and E.tipo = '06' and E.vigente  = 1 AND D.Articulo in ( select articulo from articulosnumerados) and  E.Fecha = ?  "
-			+ "ORDER BY M.Ruta, D.Articulo";
+			+ "FROM ENCABEZADOCUMENTO AS E, DETALLEDOCUMENTO AS D, DATOSCLIENTE AS M "
+			+ "WHERE E.Id=D.Id AND  E.Id = M.Id  and E.tipo = '06' and E.vigente  = 1 AND D.Articulo in ( select articulo from articulosnumerados) and  E.Fecha = ?  "
+			+ "ORDER BY M.Ruta, D.Articulo";	
 
 	/**
 	 * Query de todos los nombres de ruta.
