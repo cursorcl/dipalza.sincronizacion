@@ -318,6 +318,10 @@ public class Numerados extends JPanel implements ActionListener, FocusListener {
 	private JButton getBtnSave() {
 		if (btnSave == null) {
 			btnSave = new JButton("");
+			btnSave.setFocusPainted(false);
+			btnSave.setFocusTraversalKeysEnabled(false);
+			btnSave.setFocusable(false);
+			btnSave.setRequestFocusEnabled(false);
 			btnSave.setToolTipText("Grabar informaci\u00F3n del prodcuto.");
 			btnSave.setActionCommand(ADD);
 			btnSave.addActionListener(this);
@@ -380,7 +384,7 @@ public class Numerados extends JPanel implements ActionListener, FocusListener {
 			protected void done() {
 				try {
 					modeloNumerado.setDatos(get());
-					lblIndex.setText("--");
+					//lblIndex.setText("--");
 				} catch (Exception ignore) {
 				}
 			}
@@ -526,12 +530,29 @@ public class Numerados extends JPanel implements ActionListener, FocusListener {
 			ftxtPeso.addFocusListener(new FocusAdapter() {
 				@Override
 				public void focusGained(FocusEvent e) {
+					fillProduct(txtArticulo.getText());
 					ftxtPeso.selectAll();
 				}
 
 			});
 			ftxtPeso.setToolTipText("Ingrese el peso del producto.");
+			ftxtPeso.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "DoClickPeso");
+			ftxtPeso.getActionMap().put("DoClickPeso", new AbstractAction() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					controlador.grabarNumerado(txtArticulo.getText(), getPeso());
+					ftxtPeso.setText("");
+					fillProducts();
+					getTxtArticulo().requestFocus();
+				}
+
+			});
+			
 		}
+		
+		
 		return ftxtPeso;
 	}
 

@@ -39,6 +39,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
@@ -106,7 +108,15 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 	private JMenuItem mnuLineaFacturas;
 	public static Integer nroLineas;
 
-	public SincronizacionMMI() {
+	public SincronizacionMMI() throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+
+
+		com.jtattoo.plaf.acryl.AcrylLookAndFeel.setTheme("Green", "INSERT YOUR LICENSE KEY HERE", "Dipalza Ltda.");
+        
+        
+        // select the Look and Feel
+        UIManager.setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");		
+		
 		setAlwaysOnTop(true);
 
 		Properties logProperties = new Properties();
@@ -447,7 +457,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 		return jSeparator;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 		JFrame frame = new SincronizacionMMI();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
