@@ -9,7 +9,6 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
@@ -143,7 +142,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
 		String sqlDETALLEDOCUMENTOCredito = "select sum(cantidad) as stock from detalledocumento  d, encabezadocumento e where d.articulo = ? and d.local = '000'  and d.tipoid = '09' and d.id = e.id  and e.vigente = 1";
 		String sqlDETALLEDOCUMENTODebito = "select sum(cantidad) as stock from detalledocumento  d, encabezadocumento e where d.articulo = ? and d.local = '000'  and d.tipoid in ( '06', '10') and d.id = e.id  and e.vigente = 1 ";
 
-		Vector<String> codes = null;
+		List<String> codes = null;
 		VectorProductos vProductos = null;
 
 		strSelect = "SELECT distinct articulo FROM Numerados";
@@ -152,7 +151,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
 			ResultSet res = pstmt.executeQuery();
 			while (res.next()) {
 				if (codes == null) {
-					codes = new Vector<String>();
+					codes = new ArrayList<String>();
 				}
 				codes.add(res.getString("articulo"));
 			}
@@ -263,14 +262,14 @@ public class DataSQL extends EventEmisor implements IProcessor {
 		return v;
 	}
 
-	public Vector<ListaCorrelativos> getCorrelaModificar() {
-		Vector<ListaCorrelativos> v = new Vector<ListaCorrelativos>();
+	public List<ListaCorrelativos> getCorrelaModificar() {
+		List<ListaCorrelativos> v = new ArrayList<ListaCorrelativos>();
 		strSelect = "select * from numerados";
 		try {
 			PreparedStatement pstmt = con.prepareStatement(strSelect);
 			ResultSet res = pstmt.executeQuery();
 			while (res.next()) {
-				v.addElement(
+				v.add(
 						new ListaCorrelativos(res.getString("articulo"), res.getInt("numero"), res.getFloat("peso")));
 			}
 			res.close();
@@ -310,7 +309,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
 		}
 	}
 
-	public String setVentas(Vector<?> encabezado, Vector<?> itemes, FechaFormateada fecha) {
+	public String setVentas(List<?> encabezado, List<?> itemes, FechaFormateada fecha) {
 		mmiFaturas.setVisible(true);
 		int nItemes = 0;
 		int j = 0;
@@ -325,7 +324,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
 		if ((itemes != null) && (itemes.size() > 0)) {
 			try {
 				for (int n = 0; n < encabezado.size(); ++n) {
-					v.decode((byte[]) encabezado.elementAt(n));
+					v.decode((byte[]) encabezado.get(n));
 					v.setFecha(fecha);
 					if (!v.isDroped()) {
 						rut = v.getRut();
@@ -334,12 +333,12 @@ public class DataSQL extends EventEmisor implements IProcessor {
 						mmiFaturas.setFecha(fecha.toString());
 
 						ItemesVenta itemesV = new ItemesVenta();
-						itemesV.decode((byte[]) itemes.elementAt(n));
+						itemesV.decode((byte[]) itemes.get(n));
 
 						itemesV.add(getConduccion(rut));
 
 						nItemes = 0;
-						Vector<ItemVenta> filasV = itemesV.getAll();
+						List<ItemVenta> filasV = itemesV.getAll();
 						boolean allItems = true;
 
 						// Limpio los valores para el reporte de deudores
@@ -366,7 +365,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
 								}
 							}
 							for (j = 1; (j <= SincronizacionMMI.nroLineas) && (nItemes < filasV.size()); j++) {
-								ItemVenta iv = (ItemVenta) filasV.elementAt(nItemes);
+								ItemVenta iv = filasV.get(nItemes);
 								ResultDetalle r = factura.insertDetalleVenta(iv, id, j);
 								if ((r.getResult() == 1) || (r.getResult() == 2)) {
 									allItems = false;
@@ -627,8 +626,8 @@ public class DataSQL extends EventEmisor implements IProcessor {
 				pstmt = null;
 
 				notify("Generado Detalle Documento con factura = " + oFactura);
-				Vector e = new Vector(1);
-				Vector i = new Vector(1);
+				List<byte[]> e = new ArrayList<>(1);
+				List<byte[]> i = new ArrayList(1);
 				e.add(encabezado.encode());
 				i.add(itemesV.encode());
 				nFactura = setVentas(e, i, fecha);

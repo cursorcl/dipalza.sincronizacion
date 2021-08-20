@@ -1,22 +1,24 @@
  package com.grupo.forms;
  
  import java.text.DecimalFormat;
- import java.util.Vector;
- import javax.swing.table.AbstractTableModel;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.table.AbstractTableModel;
  
  public class FacturasModel extends AbstractTableModel
  {
   private static final long serialVersionUID = 1L;
 
  
-   private Vector<FacturaItemModel> data = null;
+   private List<FacturaItemModel> data = null;
  
    private String[] columnNames = { "Factura", "Cliente", "Neto", "Iva", "Bruto", "Todos" };
    private DecimalFormat df;
  
    public FacturasModel()
    {
-     this.data = new Vector<FacturaItemModel>();
+     this.data = new ArrayList<FacturaItemModel>();
      this.df = ((DecimalFormat)DecimalFormat.getCurrencyInstance());
    }
  
@@ -31,7 +33,7 @@
  
    public Object getValueAt(int rowIndex, int columnIndex) {
      Object result = null;
-     FacturaItemModel model = (FacturaItemModel)this.data.elementAt(rowIndex);
+     FacturaItemModel model = (FacturaItemModel)this.data.get(rowIndex);
      if (model != null) {
        switch (columnIndex)
        {
