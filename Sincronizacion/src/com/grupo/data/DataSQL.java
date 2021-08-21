@@ -309,105 +309,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
 		}
 	}
 
-	public String setVentas(List<?> encabezado, List<?> itemes, FechaFormateada fecha) {
-		mmiFaturas.setVisible(true);
-		int nItemes = 0;
-		int j = 0;
-		String id = "";
-		String rut = "";
-		String nroFactura = "";
-		String condicion = "";
-		int dias = 0;
-		float ila = 0.0F;
-		float neto = 0.0F;
-		EncabezadoVenta v = new EncabezadoVenta();
-		if ((itemes != null) && (itemes.size() > 0)) {
-			try {
-				for (int n = 0; n < encabezado.size(); ++n) {
-					v.decode((byte[]) encabezado.get(n));
-					v.setFecha(fecha);
-					if (!v.isDroped()) {
-						rut = v.getRut();
-
-						mmiFaturas.setVendedor(v.getVendedor());
-						mmiFaturas.setFecha(fecha.toString());
-
-						ItemesVenta itemesV = new ItemesVenta();
-						itemesV.decode((byte[]) itemes.get(n));
-
-						itemesV.add(getConduccion(rut));
-
-						nItemes = 0;
-						List<ItemVenta> filasV = itemesV.getAll();
-						boolean allItems = true;
-
-						// Limpio los valores para el reporte de deudores
-						ListadoCreditos.getInstance().clear();
-						while (nItemes < filasV.size()) {
-							if (nItemes % SincronizacionMMI.nroLineas == 0) {
-								ila = 0.0F;
-								neto = 0.0F;
-								id = factura.insertEncabezado(v);
-								nroFactura = factura.getNumeroFactura(id);
-								int nCondicion = v.getCondicionVenta() - 1;
-								condicion = Constantes.COD_MODO_PAGO[nCondicion];
-								dias = Constantes.DIA_MODO_PAGO[nCondicion];
-								String strCondicion = Constantes.STR_MODO_PAGO[nCondicion];
-								if (strCondicion.contains("CREDITO")) {
-									RegistroVentaCredito registro = new RegistroVentaCredito();
-									registro.setNumeroFactura(nroFactura);
-									registro.setNombre(v.getNombreCliente());
-									registro.setRut(v.getRut());
-									registro.setRuta(factura.getRuta(rut));
-									registro.setVendedor(v.getVendedor());
-									registro.setVenta(v.getNeto() * (1 + v.getPorcentajeIva()));
-									ListadoCreditos.getInstance().add(registro);
-								}
-							}
-							for (j = 1; (j <= SincronizacionMMI.nroLineas) && (nItemes < filasV.size()); j++) {
-								ItemVenta iv = filasV.get(nItemes);
-								ResultDetalle r = factura.insertDetalleVenta(iv, id, j);
-								if ((r.getResult() == 1) || (r.getResult() == 2)) {
-									allItems = false;
-									Producto pr = factura.getDatosProducto(iv.getArticulo());
-									mmiFaturas.addItemFallido(nroFactura + " : " + pr.getArticulo() + " "
-											+ pr.getNombre() + " " + r.getFaltante());
-								}
-								if (r.getResult() != 2) {
-									neto += r.getTotal();
-								}
-								++nItemes;
-							}
-
-							ila = factura.insertIla(nroFactura, id);
-							factura.insertTotalDocumento(id, neto, v.getPorcentajeIva(), ila);
-							factura.insertCtaDcto(nroFactura, v, neto, ila);
-							factura.insertDatosCliente(rut, id, condicion, dias, v.getCodigoCliente()); // AQUI
-							factura.insertFolios(nroFactura);
-
-							FacturaItemModel fModel = getFacturaModel(nroFactura, allItems, v, neto);
-							mmiFaturas.addItemVenta(fModel);
-							mmiFaturas.setIva(v.getPorcentajeIva());
-							mmiFaturas.addNeto(neto);
-						}
-					}
-				}
-				con.commit();
-			} catch (SQLException e) {
-				try {
-					e.printStackTrace();
-					con.rollback();
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
-
-			}
-
-		}
-
-		mmiFaturas.message("Se ha concluido el ingreso de facturas", "FACTURAS");
-		return nroFactura;
-	}
+	
 
 	private String setVenta(EncabezadoVenta encabezado, ItemesVenta itemes, FechaFormateada fecha) {
 		mmiFaturas.setVisible(true);
@@ -626,11 +528,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
 				pstmt = null;
 
 				notify("Generado Detalle Documento con factura = " + oFactura);
-				List<byte[]> e = new ArrayList<>(1);
-				List<byte[]> i = new ArrayList(1);
-				e.add(encabezado.encode());
-				i.add(itemesV.encode());
-				nFactura = setVentas(e, i, fecha);
+				nFactura = setVenta(encabezado, itemesV, fecha);
 				notify("Proceso de generación de nueva Factura = " + nFactura + " finalizado");
 			}
 		} catch (SQLException e) {

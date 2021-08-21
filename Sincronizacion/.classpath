@@ -16,6 +16,6 @@
 	<classpathentry kind="lib" path="lib/poi-ooxml-schemas-3.9.jar"/>
 	<classpathentry kind="lib" path="lib/xmlbeans-5.2.4.jar"/>
 	<classpathentry kind="lib" path="lib/JTattoo-1.6.13.jar"/>
-	<classpathentry kind="lib" path="D:/dev/SP EOS/dipalza2/dipalza.lib.transfer/dipalza.lib.transfer.jar" sourcepath="/dipalza.lib.transfer"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/dipalza.lib.transfer"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
