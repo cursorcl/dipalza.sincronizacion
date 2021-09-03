@@ -110,12 +110,11 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 
 	public SincronizacionMMI() throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 
-
-		com.jtattoo.plaf.acryl.AcrylLookAndFeel.setTheme("Green", "INSERT YOUR LICENSE KEY HERE", "Dipalza Ltda.");
-        
-        
-        // select the Look and Feel
-        UIManager.setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");		
+		com.jtattoo.plaf.graphite.GraphiteLookAndFeel.setTheme("Black", "INSERT YOUR LICENSE KEY HERE", "Dipalza Ltda.");
+		UIManager.setLookAndFeel("com.jtattoo.plaf.graphite.GraphiteLookAndFeel");
+		
+		//com.jtattoo.plaf.acryl.AcrylLookAndFeel.setTheme("Orange", "INSERT YOUR LICENSE KEY HERE", "Dipalza Ltda.");
+        //UIManager.setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");		
 		
 		setAlwaysOnTop(true);
 
@@ -222,6 +221,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 			gridBagConstraints4.fill = 1;
 			gridBagConstraints4.gridx = 1;
 			this.jPanel2 = new JPanel();
+			jPanel2.setBackground(Color.ORANGE);
 			GridBagLayout gbl_jPanel2 = new GridBagLayout();
 			gbl_jPanel2.columnWeights = new double[] { 1.0, 0.0, 1.0 };
 			gbl_jPanel2.columnWidths = new int[] { 0, 100, 0 };
