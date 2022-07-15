@@ -58,6 +58,8 @@ import com.grupo.forms.report.HojaRutaExcel;
 import com.grupo.numerados.balanza.ClienteReceptor;
 import com.grupo.numerados.controller.ControladorNumerados;
 import com.grupo.numerados.view.DialogNumerados;
+import com.grupo.numerados.view.delete.DialogDeleteNumerados;
+import com.grupo.numerados.view.delete.controller.ControladorDeleteNumerados;
 import com.grupo.util.EventMsg;
 import com.grupo.util.EventMsgListener;
 import com.grupo.util.WindowsUtil;
@@ -107,6 +109,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 	public static boolean factura_electronica = false;
 	private JMenuItem mnuLineaFacturas;
 	public static Integer nroLineas;
+	private JMenuItem mnuBorrarNumeradosSinDetalle;
 
 	public SincronizacionMMI() throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 
@@ -354,6 +357,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 			mnuPPal.add(getMnuClonar());
 			// mnuPPal.add(getMnuCreditos());
 			mnuPPal.add(getMnuNumerados());
+			mnuPPal.add(getMnuBorrarNumeradosSinDetalle());
 			mnuPPal.add(getMnuReporte());
 			mnuPPal.add(getMnuLineaFacturas());
 			mnuPPal.add(getMntmArticulosEspeciales());
@@ -506,6 +510,13 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 
 	}
 
+	public void numeradosSinDetalle() {
+		ControladorDeleteNumerados controlador = new ControladorDeleteNumerados();
+		DialogDeleteNumerados frmDeleteNumerados = controlador.getView();
+		frmDeleteNumerados.setVisible(true);
+
+	}
+	
 	public void numerados() {
 		ControladorNumerados controlador = new ControladorNumerados();
 		DialogNumerados frmQuesos = controlador.getView();
@@ -655,5 +666,16 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 
 		}
 		return mnuLineaFacturas;
+	}
+	private JMenuItem getMnuBorrarNumeradosSinDetalle() {
+		if (mnuBorrarNumeradosSinDetalle == null) {
+			mnuBorrarNumeradosSinDetalle = new JMenuItem("Borrar Numerados");
+			mnuBorrarNumeradosSinDetalle.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					numeradosSinDetalle();
+				}
+			});
+		}
+		return mnuBorrarNumeradosSinDetalle;
 	}
 } // @jve:decl-index=0:visual-constraint="19,27"

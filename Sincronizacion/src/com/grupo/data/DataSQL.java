@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
@@ -23,6 +24,7 @@ import com.grupo.biblioteca.VectorClientes;
 import com.grupo.biblioteca.VectorProductos;
 import com.grupo.biblioteca.VectorVenta;
 import com.grupo.constantes.Constantes;
+import com.grupo.data.results.NumeradosSinDetalleDTO;
 import com.grupo.forms.FacturaItemModel;
 import com.grupo.forms.FrmFacturasEmitidas;
 import com.grupo.forms.ResultDetalle;
@@ -269,8 +271,7 @@ public class DataSQL extends EventEmisor implements IProcessor {
 			PreparedStatement pstmt = con.prepareStatement(strSelect);
 			ResultSet res = pstmt.executeQuery();
 			while (res.next()) {
-				v.add(
-						new ListaCorrelativos(res.getString("articulo"), res.getInt("numero"), res.getFloat("peso")));
+				v.add(new ListaCorrelativos(res.getString("articulo"), res.getInt("numero"), res.getFloat("peso")));
 			}
 			res.close();
 			pstmt.close();
@@ -309,8 +310,6 @@ public class DataSQL extends EventEmisor implements IProcessor {
 		}
 	}
 
-	
-
 	private String setVenta(EncabezadoVenta encabezado, ItemesVenta itemes, FechaFormateada fecha) {
 		mmiFaturas.setVisible(true);
 		int nItemes = 0;
@@ -324,6 +323,23 @@ public class DataSQL extends EventEmisor implements IProcessor {
 		float neto = 0.0F;
 		if ((itemes != null) && (itemes.size() > 0)) {
 			try {
+
+				log.info("CANTIDAD ITEMES VENTA RECIBIDOS:" + itemes.getAll().size());
+				// Los transfiero a una nueva lista
+				List<ItemVenta> list = new ArrayList<>();
+				for (ItemVenta item : itemes.getAll()) {
+					list.add(item);
+				}
+				// Ordeno los códigos de venta.
+				Collections.sort(list, (o1, o2) -> o1.getArticulo().compareTo(o2.getArticulo()));
+				ItemesVenta ordered = new ItemesVenta();
+				list.forEach(i -> ordered.add(i));
+
+				log.info("CANTIDAD ITEMES ORDENADOS:" + ordered.getAll().size());
+				// Los retorno a la lista original ordenados
+				itemes.set(ordered);
+				log.info("ITEMES ORDENADOS ASIGNADOS A LA VENTA");
+
 				encabezado.setFecha(fecha);
 				rut = encabezado.getRut();
 
@@ -448,7 +464,6 @@ public class DataSQL extends EventEmisor implements IProcessor {
 		}
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public String clonarFactura(String oFactura) {
 		EncabezadoVenta encabezado = null;
 		ItemesVenta itemesV = null;
@@ -723,5 +738,59 @@ public class DataSQL extends EventEmisor implements IProcessor {
 			log.error(e.getMessage());
 		}
 
+	}
+
+	public List<NumeradosSinDetalleDTO> obtenerNumeradosSinDetalle() {
+		String SQL_NUMERADOS_SIN_DETALLE = "select n.articulo, a.Descripcion from articulosnumerados n, ARTICULO a where n.articulo = a.articulo and n.articulo not in (select distinct articulo from Numerados) order by n.articulo";
+		List<NumeradosSinDetalleDTO> result = new ArrayList<>();
+		try {
+			PreparedStatement pstmt = con.prepareStatement(SQL_NUMERADOS_SIN_DETALLE);
+			ResultSet res = pstmt.executeQuery();
+
+			while (res.next()) {
+				String articulo = res.getString(1);
+				String descripcion = res.getString(2);
+				result.add(new NumeradosSinDetalleDTO(articulo, descripcion));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+		}
+
+		return result;
+	}
+
+	public void eliminarNumeradoSinDetalle(NumeradosSinDetalleDTO numerado) {
+		String strDelete = "delete from articulosnumerados where articulo = ?";
+		PreparedStatement pstmt;
+		try {
+			pstmt = con.prepareStatement(strDelete);
+			pstmt.setString(1, numerado.getArticulo());
+			pstmt.executeUpdate();
+			pstmt.close();
+			con.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void eliminarNumeradosSinDetalle(List<NumeradosSinDetalleDTO> numerados) {
+		if (numerados == null || numerados.isEmpty()) {
+			return;
+		}
+		String strDelete = "delete from articulosnumerados where articulo = ? ";
+		PreparedStatement pstmt;
+		
+		for (NumeradosSinDetalleDTO numerado : numerados) {
+			try {
+				pstmt = con.prepareStatement(strDelete);
+				pstmt.setString(1, numerado.getArticulo());
+				pstmt.executeUpdate();
+				pstmt.close();
+				con.commit();				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
