@@ -1,0 +1,54 @@
+DEBUG Thread-1 com.grupo.biblioteca.server.ConnectionServer - Escuchando puerta 5502
+DEBUG Thread-1 com.grupo.biblioteca.server.ConnectionServer - Esperando conexión /192.168.0.11:5502
+INFO main cl.eos.util.Utils - C:\Users\eosorio\Documents\Dipalza ya existe.
+DEBUG main com.grupo.forms.SincronizacionMMI - C:\Users\eosorio\Documents\Dipalza\sqlserver.properties
+INFO main cl.eos.util.Utils - C:\Users\eosorio\Documents\Dipalza ya existe.
+DEBUG main com.grupo.forms.SincronizacionMMI - Archivo de propiedades encontrado correctamente
+DEBUG Thread-1 com.grupo.biblioteca.server.ConnectionServer - Inicializando puerta 5502
+DEBUG Thread-1 com.grupo.biblioteca.server.ConnectionServer - Escuchando puerta 5502
+DEBUG Thread-1 com.grupo.biblioteca.server.ConnectionServer - Esperando conexión /192.168.0.11:5502
+INFO main cl.eos.util.Utils - C:\Users\eosorio\Documents\Dipalza fue creado.
+DEBUG main com.grupo.forms.SincronizacionMMI - C:\Users\eosorio\Documents\Dipalza\sqlserver.properties
+INFO main cl.eos.util.Utils - C:\Users\eosorio\Documents\Dipalza ya existe.
+DEBUG main com.grupo.forms.SincronizacionMMI - Archivo de propiedades NO encontrado:C:\Users\eosorio\Documents\Dipalza\sqlserver.properties
+INFO main cl.eos.util.Utils - C:\Users\eosorio\Documents\Dipalza ya existe.
+DEBUG main com.grupo.forms.SincronizacionMMI - C:\Users\eosorio\Documents\Dipalza\sqlserver.properties
+INFO main cl.eos.util.Utils - C:\Users\eosorio\Documents\Dipalza ya existe.
+DEBUG main com.grupo.forms.SincronizacionMMI - Archivo de propiedades NO encontrado:C:\Users\eosorio\Documents\Dipalza\sqlserver.properties
+DEBUG Thread-0 com.grupo.biblioteca.server.ConnectionServer - Inicializando puerta 5502
+INFO Thread-0 com.grupo.biblioteca.server.ConnectionServer - /192.168.100.100
+DEBUG Thread-0 com.grupo.biblioteca.server.ConnectionServer - Escuchando puerta 5502
+DEBUG Thread-0 com.grupo.biblioteca.server.ConnectionServer - Esperando conexión /192.168.100.100:5502
+INFO main cl.eos.util.Utils - C:\Users\eosorio\Documents\Dipalza ya existe.
+DEBUG main com.grupo.forms.SincronizacionMMI - C:\Users\eosorio\Documents\Dipalza\sqlserver.properties
+INFO main cl.eos.util.Utils - C:\Users\eosorio\Documents\Dipalza ya existe.
+DEBUG main com.grupo.forms.SincronizacionMMI - Archivo de propiedades NO encontrado:C:\Users\eosorio\Documents\Dipalza\sqlserver.properties
+DEBUG Thread-1 com.grupo.biblioteca.server.ConnectionServer - Inicializando puerta 5502
+DEBUG Thread-1 com.grupo.biblioteca.server.ConnectionServer - Escuchando puerta 5502
+DEBUG Thread-1 com.grupo.biblioteca.server.ConnectionServer - Esperando conexión /127.0.0.1:5502
+INFO main cl.eos.util.Utils - C:\Users\eosorio\Documents\Dipalza ya existe.
+DEBUG main com.grupo.forms.SincronizacionMMI - C:\Users\eosorio\Documents\Dipalza\sqlserver.properties
+INFO main cl.eos.util.Utils - C:\Users\eosorio\Documents\Dipalza ya existe.
+DEBUG main com.grupo.forms.SincronizacionMMI - Archivo de propiedades encontrado correctamente
+INFO main com.grupo.forms.SincronizacionMMI - 001=9999
+INFO main com.grupo.forms.SincronizacionMMI - 007=9999
+INFO main com.grupo.forms.SincronizacionMMI - 0017=9999
+INFO main com.grupo.forms.SincronizacionMMI - 003=9998
+INFO main com.grupo.forms.SincronizacionMMI - *=9997
+DEBUG Thread-1 com.grupo.biblioteca.server.ConnectionServer - Inicializando puerta 5502
+INFO Thread-1 com.grupo.biblioteca.server.ConnectionServer - /192.168.10.1
+DEBUG Thread-1 com.grupo.biblioteca.server.ConnectionServer - Escuchando puerta 5502
+DEBUG Thread-1 com.grupo.biblioteca.server.ConnectionServer - Esperando conexión /192.168.10.1:5502
+INFO main cl.eos.util.Utils - C:\Users\eosorio\Documents\Dipalza ya existe.
+DEBUG main com.grupo.forms.SincronizacionMMI - C:\Users\eosorio\Documents\Dipalza\sqlserver.properties
+INFO main cl.eos.util.Utils - C:\Users\eosorio\Documents\Dipalza ya existe.
+DEBUG main com.grupo.forms.SincronizacionMMI - Archivo de propiedades encontrado correctamente
+INFO main com.grupo.forms.SincronizacionMMI - 001=9999
+INFO main com.grupo.forms.SincronizacionMMI - 007=9999
+INFO main com.grupo.forms.SincronizacionMMI - 017=9999
+INFO main com.grupo.forms.SincronizacionMMI - 003=9998
+INFO main com.grupo.forms.SincronizacionMMI - *=9997
+DEBUG Thread-1 com.grupo.biblioteca.server.ConnectionServer - Inicializando puerta 5502
+INFO Thread-1 com.grupo.biblioteca.server.ConnectionServer - /192.168.10.1
+DEBUG Thread-1 com.grupo.biblioteca.server.ConnectionServer - Escuchando puerta 5502
+DEBUG Thread-1 com.grupo.biblioteca.server.ConnectionServer - Esperando conexión /192.168.10.1:5502

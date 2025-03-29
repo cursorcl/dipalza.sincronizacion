@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.EventObject;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.TreeSet;
 
@@ -69,6 +71,7 @@ import cl.eos.util.Utils;
 
 public class SincronizacionMMI extends JFrame implements EventMsgListener, Notificable {
 	private static final String NROLINEASFACTURA = "NROLINEASFACTURA";
+	private static final String CONDUCCION = "CONDUCCION";
 	private static final long serialVersionUID = 1L;
 	static Logger logger = Logger.getLogger(SincronizacionMMI.class);
 
@@ -95,6 +98,7 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 
 	public static Date fechaFacturacion = new Date(System.currentTimeMillis());
 	public static Date fechaReporte = new Date(System.currentTimeMillis());
+	public static Map<String, String> conduccion =  new HashMap<>();
 
 	public static Properties PROPERTIES;
 
@@ -138,12 +142,14 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 			factura_electronica = ((String) PROPERTIES.getProperty("ELECTRONICA", "FALSE")).equalsIgnoreCase("TRUE");
 
 			nroLineas = Integer.parseInt(PROPERTIES.getProperty(NROLINEASFACTURA, "25"));
-
+			
 			initialize();
+			inicializarConducion();
 
 		} catch (IOException e) {
 			BasicConfigurator.configure();
 		}
+
 
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -165,7 +171,24 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 		graphicInit();
 		setResizable(false);
 	}
-
+	private void inicializarConducion() {
+		String strConduccion = PROPERTIES.getProperty(CONDUCCION, null);
+		if(strConduccion == null || strConduccion.isEmpty())
+		{
+			strConduccion ="001:9999,003:9998,007:9999,017:9999,*:9997";
+		}
+		
+		String[] items = strConduccion.trim().split(",");
+		for(String item: items)
+		{
+			String[] values = item.trim().split(":");
+			if(values == null || values.length != 2)
+				continue;
+			conduccion.put(values[0], values[1]);
+			logger.info(String.format("%s=%s", values[0], values[1]));
+		}
+	}
+	
 	private JPanel getJPanel() {
 		if (this.jPanel == null) {
 			this.jPanel = new JPanel();
