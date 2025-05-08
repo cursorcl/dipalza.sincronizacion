@@ -273,22 +273,28 @@ public class FacturaSQL {
 					int[] nV = new int[nVenta];
 					Arrays.fill(nV, -1);
 
-					stmNumerado = this.con.prepareStatement("select * from numerados where articulo = ? order by correlativo");
+					stmNumerado = this.con
+							.prepareStatement("select * from numerados where articulo = ? order by correlativo");
 					stmNumerado.setMaxRows(nVenta);
 					stmNumerado.setString(1, articulo);
 					r = stmNumerado.executeQuery();
-					while (r.next()) {
+
+					// Al parecer al tener muchos elementos en stock se pasa de largo en el arreglo.
+					// Por eso se agrega condición m < itemsVenta
+					// EOS 2024-03-06
+					int itemsVenta = nVenta; 
+					while (r.next() && m < itemsVenta) {
 						nV[m] = r.getInt("correlativo");
-						if (nV[m] == -1) {
+
+						if (nV[m] == -1)
 							break;
-						}
+
 						n = r.getInt("numero");
 						numeros = numeros + (numeros.isEmpty() ? "" : "-") + n;
 						venta += r.getFloat("peso");
 						ventaNetoLinea = venta * pVenta.getPrecio();
 						ventaNetoLinea *= (1.0F - pVenta.getDescuento() / 100.0F);
 
-						// insert into registroNumerados values(articulo,
 						++m;
 						--nVenta;
 					}
@@ -305,7 +311,7 @@ public class FacturaSQL {
 							stmNumerado.close();
 						}
 					}
-					
+
 				}
 				if (!isNumerated) {
 					float difStock = pr.getStock() - venta;
@@ -338,8 +344,7 @@ public class FacturaSQL {
 
 					// Se agrega redondeo.
 					ventaNetoLinea = Math.round(ventaNetoLinea);
-					
-					
+
 					rebajaVenta(pVenta.getArticulo(), venta);
 					PreparedStatement pstmt = this.con.prepareStatement(
 							"insert into detalledocumento (precioventa, totallinea, paridad, preciocosto, cantidad, id, linea, tipoid, local, articulo, descripcion, variacion) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -425,8 +430,7 @@ public class FacturaSQL {
 	public boolean insertCtaDcto(String factura, EncabezadoVenta e, float neto, float ila) {
 		boolean result = false;
 		float comision = 0.0F;
-		
-		
+
 		float iva = Math.round(e.getPorcentajeIva() / 100.0F * neto);
 //		float iva = e.getPorcentajeIva() / 100.0F * neto;
 		float bruto = Math.round(neto + iva + ila);
@@ -455,7 +459,7 @@ public class FacturaSQL {
 			pstmtIns.setString(11, e.getCodigoCliente());
 			pstmtIns.setString(12, "000");
 			pstmtIns.setFloat(13, ila);
-			pstmtIns.setString(14, SincronizacionMMI.factura_electronica ? "E": " ");
+			pstmtIns.setString(14, SincronizacionMMI.factura_electronica ? "E" : " ");
 			pstmtIns.executeUpdate();
 			pstmtIns.close();
 		} catch (SQLException ex) {
@@ -602,6 +606,12 @@ public class FacturaSQL {
 			r.close();
 			pstmt.close();
 
+			String conduccionId = SincronizacionMMI.conduccion.get(ruta.trim());
+			if(conduccionId == null || conduccionId.isEmpty())
+			{
+				conduccionId = SincronizacionMMI.conduccion.get("*");
+			}
+			/*
 			if (ruta.equals("001"))
 				ruta = "9999";
 			else if (ruta.equals("003"))
@@ -609,10 +619,12 @@ public class FacturaSQL {
 			else {
 				ruta = "9997";
 			}
+			*/
 			String strSelect = "Select a.codigo, a.descripcion, a.valor from msosttablas as a where a.tabla = '015' and a.codigo = ?";
 
 			pstmt = this.con.prepareStatement(strSelect);
-			pstmt.setString(1, ruta);
+			// pstmt.setString(1, ruta);
+			pstmt.setString(1, conduccionId);
 			ResultSet res = pstmt.executeQuery();
 			if (res.next()) {
 				String codigo = res.getString("codigo");
@@ -625,17 +637,21 @@ public class FacturaSQL {
 		}
 		return p;
 	}
+
 	public float insertIla(String nroFactura, String id) {
 		float ila = 0.0F;
 		try {
 
 			String tipo1 = SincronizacionMMI.factura_electronica ? "E" : " ";
-			
+
 			String queryIla = "SELECT A.CodigoIla, C.valor as PorcIla, D.TipoId, sum(TotalLinea * C.valor /100)  AS Valor FROM ARTICULO A, MSOSTTABLAS C, DETALLEDOCUMENTO D WHERE  A.Articulo = D.Articulo AND D.Id = ? and C.codigo=A.CodigoIla and C.descripcion like '%ILA%' Group by A.CodigoIla, C.valor, D.TipoId  ";
-			//String queryIla = "SELECT A.CodigoIla, A.PorcIla, D.TipoId, sum([TotalLinea]*[PorcIla]/100) AS Valor FROM ARTICULO A, DETALLEDOCUMENTO D WHERE  A.Articulo = D.Articulo AND D.Id = ? and A.porcila > 0 Group by A.CodigoIla, A.PorcIla,D.TipoId";
-			
+			// String queryIla = "SELECT A.CodigoIla, A.PorcIla, D.TipoId,
+			// sum([TotalLinea]*[PorcIla]/100) AS Valor FROM ARTICULO A, DETALLEDOCUMENTO D
+			// WHERE A.Articulo = D.Articulo AND D.Id = ? and A.porcila > 0 Group by
+			// A.CodigoIla, A.PorcIla,D.TipoId";
+
 			PreparedStatement pstmt = this.con.prepareStatement(queryIla);
-					
+
 			pstmt.setString(1, id);
 			ResultSet r = pstmt.executeQuery();
 			while (r.next()) {
