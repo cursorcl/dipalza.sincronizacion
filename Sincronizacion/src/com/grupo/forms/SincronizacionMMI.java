@@ -113,11 +113,14 @@ public class SincronizacionMMI extends JFrame implements EventMsgListener, Notif
 
 	public SincronizacionMMI() throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
 
-		com.jtattoo.plaf.graphite.GraphiteLookAndFeel.setTheme("Black", "INSERT YOUR LICENSE KEY HERE", "Dipalza Ltda.");
-		UIManager.setLookAndFeel("com.jtattoo.plaf.graphite.GraphiteLookAndFeel");
+//		com.jtattoo.plaf.graphite.GraphiteLookAndFeel.setTheme("Black", "INSERT YOUR LICENSE KEY HERE", "Dipalza Ltda.");
+//		UIManager.setLookAndFeel("com.jtattoo.plaf.graphite.GraphiteLookAndFeel");
 		
-		//com.jtattoo.plaf.acryl.AcrylLookAndFeel.setTheme("Orange", "INSERT YOUR LICENSE KEY HERE", "Dipalza Ltda.");
-        //UIManager.setLookAndFeel("com.jtattoo.plaf.acryl.AcrylLookAndFeel");		
+	    try {
+	        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 		
 		setAlwaysOnTop(true);
 
